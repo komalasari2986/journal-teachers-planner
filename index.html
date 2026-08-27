@@ -76,6 +76,30 @@ button,input,textarea,select{font-family:inherit}
 h1{font-size:27px;line-height:1.2;margin-top:5px;color:var(--text)}
 .subtitle{color:var(--sub);font-size:12px;margin-top:7px}
 
+.btn-back-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--card);
+  color: var(--sub);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+}
+.btn-back-home:hover {
+  background: #ffffff;
+  color: var(--green);
+  border-color: var(--green);
+  transform: translateX(-3px);
+  box-shadow: 0 4px 10px rgba(4,120,87,0.12);
+}
+
 .clock{
   background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
   border: 1px solid #10b98144;
@@ -231,7 +255,6 @@ footer{color:var(--sub);font-size:10px;text-align:center;padding:24px 0}
     box-shadow:0 2px 8px #00000012;
 }
 
-/* STYLING KHUSUS LOGO UNTUK TAMPILAN OVERLAY LOGIN */
 .auth-header-brand {
   text-align: center;
   margin-bottom: 20px;
@@ -284,7 +307,6 @@ footer{color:var(--sub);font-size:10px;text-align:center;padding:24px 0}
 }
 .toggle-password-btn:hover { color: var(--green); }
 
-/* RESPONSIVE DESAIN UNTUK HP */
 @media(max-width:1050px){
   .stats{grid-template-columns:repeat(2,1fr)}
   .sidebar{width:235px}
@@ -442,7 +464,6 @@ th { border-color: inherit !important; }
 <div id="loginScreen" style="position:fixed; inset:0; z-index:9999; background:linear-gradient(135deg,#047857,#0f172a); display:flex; align-items:center; justify-content:center; padding:20px; overflow-y:auto;">
   <div style="background:#fff; border-radius:16px; width:100%; max-width:420px; padding:25px; box-shadow:0 10px 25px rgba(0,0,0,0.2); margin:auto;">
     
-    <!-- BRANDING LOGIN: LOGO SEKOLAH, NAMA SEKOLAH, & TAHUN AJARAN SAAT INI -->
     <div class="auth-header-brand">
       <img class="school-logo auth-logo-img" src="assets/logo-sekolah.jpg" alt="Logo SD Islam Ramah Anak">
       <span class="brand-logo-fallback" style="display:none; font-size:32px; margin-bottom:8px;"><i class="fa-solid fa-school"></i></span>
@@ -647,11 +668,28 @@ th { border-color: inherit !important; }
       <div class="card-sub">Atur jumlah siswa secara fleksibel (Maksimal 24 siswa). Perubahan tersimpan otomatis.</div>
     </div>
     <div class="actions">
+      <button class="btn amber" onclick="togglePasteBox()"><i class="fa-solid fa-paste"></i> Paste Data dari Excel</button>
       <button class="btn" onclick="addStudentRow()"><i class="fa-solid fa-plus"></i> Tambah Siswa</button>
       <button class="btn danger" onclick="removeLastStudentRow()"><i class="fa-solid fa-minus"></i> Kurangi Siswa</button>
       <button class="btn secondary" onclick="saveStudents()"><i class="fa-solid fa-floppy-disk"></i> Simpan</button>
     </div>
   </div>
+
+  <!-- KOTAK POPUP INPUT TEMPEL EXCEL -->
+  <div id="pasteBoxContainer" class="card" style="display:none; background:#fffbe8; border:1px solid #fde68a;">
+    <div class="card-title" style="color:var(--amber)"><i class="fa-solid fa-clipboard"></i> Tempel (Paste) Data Siswa dari Excel</div>
+    <div class="card-sub" style="margin-bottom:10px">
+      Blok kolom data siswa di Excel (bisa 1 kolom Nama saja, atau sekaligus beberapa kolom: Nama, NISN, Jenis Kelamin, dll), tekan <b>Ctrl + C</b>, lalu tempelkan (<b>Ctrl + V</b>) pada kotak di bawah ini dan klik <b>Proses Tempel Data</b>.
+    </div>
+    <div class="field">
+      <textarea id="pasteInputText" placeholder="Tempelkan baris/kolom dari Excel di sini..." style="height:120px; background:#fff;"></textarea>
+    </div>
+    <div style="margin-top:10px; display:flex; gap:8px;">
+      <button class="btn" onclick="processPastedNames()"><i class="fa-solid fa-check"></i> Proses Tempel Data</button>
+      <button class="btn secondary" onclick="togglePasteBox()">Batal</button>
+    </div>
+  </div>
+
   <div class="card">
     <div class="table-wrap">
       <table>
@@ -1284,7 +1322,7 @@ th { border-color: inherit !important; }
 
 <script>
 // URL APPS SCRIPT
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyVjdO1TJGbSYsYAPo6mMpYsxn62OJiZUV_7Mo5vwGQpkmgiYw3i-gWDvw2HGfWYu0b/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzdMnzgF873s5P4L9cKMpMP_YRJy-YknjnKpvCFW3ssPOHpVP_Yjm5KRAUeGePShu4u/exec";
 
 let syncTimeout = null;
 let cloudLoading = false;
@@ -1660,10 +1698,13 @@ function showSection(id){
    refleksi:["Jurnal Refleksi Guru","Evaluasi pembelajaran, identifikasi masalah, & tindak lanjut"],
    print_view:["Ringkasan Laporan Planner","Siap untuk dicetak dan ditandatangani"]
  };
+ 
  if(titles[id]){
-   document.getElementById("pageTitle").textContent=titles[id][0];
-   document.getElementById("pageSubtitle").textContent=titles[id][1];
+   const backBtnHtml = id !== 'home' ? `<button class="btn-back-home" onclick="showSection('home')"><i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard / Home</button>` : '';
+   document.getElementById("pageTitle").innerHTML = backBtnHtml + `<div>${titles[id][0]}</div>`;
+   document.getElementById("pageSubtitle").textContent = titles[id][1];
  }
+ 
  window.scrollTo({top:0,behavior:"smooth"});
  if(innerWidth<=760) document.getElementById("sidebar").classList.remove("open");
  if(id==="print_view") updatePrintViewData();
@@ -1813,6 +1854,77 @@ function removeLastStudentRow(){
     set("students", JSON.stringify(saved));
     renderStudents();
   }
+}
+
+// TOGGLE POPUP KOTAK PASTE EXCEL
+function togglePasteBox() {
+  const box = document.getElementById("pasteBoxContainer");
+  if (box.style.display === "none") {
+    box.style.display = "block";
+    document.getElementById("pasteInputText").focus();
+  } else {
+    box.style.display = "none";
+  }
+}
+
+// PROSES TEMPEL MULTI-KOLOM DARI EXCEL
+function processPastedNames() {
+  const text = document.getElementById("pasteInputText").value;
+  if (!text.trim()) {
+    alert("Silakan tempelkan data terlebih dahulu.");
+    return;
+  }
+
+  // Pecah teks per baris
+  const lines = text.split(/\r?\n/).filter(line => line.trim().length > 0);
+
+  if (lines.length === 0) {
+    alert("Tidak ada data valid yang ditemukan.");
+    return;
+  }
+
+  let saved = getStudentsData();
+
+  // Menyesuaikan jumlah baris tabel jika data tempelan lebih banyak (maksimal 24)
+  if (lines.length > saved.length) {
+    const limit = Math.min(lines.length, 24);
+    while (saved.length < limit) {
+      saved.push({ name: "", nisn: "", gender: "", birth: "", parent: "", job: "", phone: "" });
+    }
+  }
+
+  const fieldsOrder = ["name", "nisn", "gender", "birth", "parent", "job", "phone"];
+
+  lines.forEach((line, index) => {
+    if (index < 24) {
+      if (!saved[index]) {
+        saved[index] = { name: "", nisn: "", gender: "", birth: "", parent: "", job: "", phone: "" };
+      }
+
+      // Memisah kolom Excel berdasarkan Tab (\t)
+      const cols = line.split("\t").map(c => c.trim());
+
+      // Jika hanya 1 kolom yang di-copy, otomatis masuk ke Nama Siswa
+      if (cols.length === 1) {
+        saved[index].name = cols[0];
+      } else {
+        // Jika multiple kolom di-copy, masukkan ke masing-masing atribut berurutan
+        cols.forEach((val, colIdx) => {
+          if (colIdx < fieldsOrder.length) {
+            saved[index][fieldsOrder[colIdx]] = val;
+          }
+        });
+      }
+    }
+  });
+
+  set("students", JSON.stringify(saved));
+  renderStudents();
+
+  document.getElementById("pasteInputText").value = "";
+  togglePasteBox();
+
+  alert(`Berhasil mengimpor ${Math.min(lines.length, 24)} baris data siswa ke dalam tabel!`);
 }
 
 function esc(v){return String(v).replaceAll("&","&amp;").replaceAll('"',"&quot;").replaceAll("<","&lt;").replaceAll(">","&gt;")}
