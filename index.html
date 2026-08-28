@@ -242,7 +242,6 @@ footer{color:var(--sub);font-size:10px;text-align:center;padding:24px 0}
 .ttd-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:10px;text-align:center;font-size:8.5px}
 .ttd-space{height:55px}
 
-/* LOGO TAMPILAN WEB */
 .print-logo{
     width:95px;
     height:95px;
@@ -458,7 +457,6 @@ table { border-collapse: collapse !important; border: 1px solid #cbd5e1 !importa
 th, td { border: 1px solid #cbd5e1 !important; }
 th { border-color: inherit !important; }
 
-/* ATURAN CETAK (PRINT CETAK A4 KERMIT) */
 @media print {
   @page {
     size: A4 portrait;
@@ -523,7 +521,6 @@ th { border-color: inherit !important; }
     height: 14px !important;
   }
 
-  /* JUDUL JUDUL ELEMEN UTAMA DIPERTEGAS JADI HITAM PEKAT */
   .print-report-container h2,
   .print-report-container h3 {
     color: #000000 !important;
@@ -533,8 +530,8 @@ th { border-color: inherit !important; }
     font-size: 8pt !important;
     margin-bottom: 1px !important;
     padding-bottom: 1px !important;
-    color: #000000 !important; /* Diubah menjadi Hitam */
-    border-bottom: 1.5px solid #000000 !important; /* Garis bawah Hitam */
+    color: #000000 !important;
+    border-bottom: 1.5px solid #000000 !important;
   }
 
   .print-grid {
@@ -552,14 +549,12 @@ th { border-color: inherit !important; }
     margin: 0px 0 !important;
   }
 
-  /* PERSEBAHAN TEKS LABEL & PERSENTASE */
   .bar-label {
     font-size: 7.5pt !important;
     margin-bottom: 0px !important;
     color: #000000 !important;
   }
   
-  /* HANYA ANGKA PERSENTASE DI GRAFIK & SUMMARY YANG HIJAU TEGAS */
   .bar-label b:last-child,
   #printTargetPctText,
   #printAbsensiPctText,
@@ -577,7 +572,6 @@ th { border-color: inherit !important; }
     print-color-adjust: exact !important;
   }
   
-  /* HANYA BATANG ISI GRAFIK YANG TETAP BERWARNA HIJAU */
   .bar-fill {
     height: 100% !important;
     background-color: #059669 !important;
@@ -597,7 +591,6 @@ th { border-color: inherit !important; }
     height: 45px !important;
   }
 
-  /* KONTROL LOGO DIPERBESAR (95px) & AMAN TIDAK KETOPONG */
   .print-logo {
     width: 95px !important;
     height: 95px !important;
@@ -827,7 +820,6 @@ th { border-color: inherit !important; }
     </div>
   </div>
 
-  <!-- KOTAK POPUP INPUT TEMPEL EXCEL -->
   <div id="pasteBoxContainer" class="card" style="display:none; background:#fffbe8; border:1px solid #fde68a;">
     <div class="card-title" style="color:var(--amber)"><i class="fa-solid fa-clipboard"></i> Tempel (Paste) Data Siswa dari Excel</div>
     <div class="card-sub" style="margin-bottom:10px">
@@ -1334,7 +1326,7 @@ th { border-color: inherit !important; }
   </div>
 </section>
 
-<!-- RINGKASAN LAPORAN PLANNER & CETAK LAPORAN (PAS 1 HALAMAN A4) -->
+<!-- RINGKASAN LAPORAN PLANNER & CETAK LAPORAN -->
 <section id="print_view" class="page">
   <div class="section-head" style="margin-bottom:8px;">
     <div></div>
@@ -1342,8 +1334,6 @@ th { border-color: inherit !important; }
   </div>
 
   <div class="print-report-container">
-    
-    <!-- HEADER LAPORAN RINGKAS -->
     <div style="text-align:center; border-bottom:1.5px solid var(--text); padding-bottom:2px; margin-bottom:4px;">
       <img class="print-logo school-logo" src="assets/logo-sekolah.jpg" alt="Logo SD Islam Ramah Anak">
       <h2 style="font-size:11px; font-weight:800; line-height:1.1;">SEKOLAH DASAR ISLAM RAMAH ANAK</h2>
@@ -1433,8 +1423,6 @@ th { border-color: inherit !important; }
     <!-- VI. RINGKASAN JURNAL REFLEKSI GURU -->
     <div class="print-section-title">VI. Ringkasan Jurnal Refleksi Guru</div>
     <div class="print-grid" style="grid-template-columns:1fr; gap:3px; margin-bottom:2px;">
-      
-      <!-- BOX BARIS 1: Refleksi Pembelajaran Pekan Ini -->
       <div class="print-box">
         <b>Refleksi Pembelajaran Pekan Ini:</b>
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-top:1px; font-size:8pt;">
@@ -1449,7 +1437,6 @@ th { border-color: inherit !important; }
         </div>
       </div>
 
-      <!-- BOX BARIS 2: Identifikasi & Evaluasi Refleksi -->
       <div class="print-box">
         <b>Identifikasi &amp; Evaluasi Refleksi:</b>
         <div style="font-size:8pt; margin-top:1px;">
@@ -1458,7 +1445,6 @@ th { border-color: inherit !important; }
           <div><b>Deskripsi Tindak Lanjut:</b> <span id="printRefTindakLanjut">-</span></div>
         </div>
       </div>
-
     </div>
 
     <!-- TANDA TANGAN -->
@@ -1486,10 +1472,11 @@ th { border-color: inherit !important; }
 
 <script>
 // URL APPS SCRIPT
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby2mgbqg0-fn0Ft2x11fQ9xwzkgFyZd3BujHUvXCgjkhSAFwNvGvg19kjqGUGRXrWU/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyf2T0OEngi79n0tC7p37lcDYZnFlk1QecZ_YXl1tRg895qEByMnyF86-mzrVfguhVm/exec";
 
 let syncTimeout = null;
 let cloudLoading = false;
+
 let activeUserKey = localStorage.getItem("jtp_account_user_key") || "";
 let activeUsername = localStorage.getItem("jtp_account_username") || "";
 let activeTA = localStorage.getItem("jtp_active_ta") || localStorage.getItem("jtp_auto_ta") || getCalculatedTA();
@@ -1564,7 +1551,6 @@ function clearPlannerLocalData(){
 }
 
 function putPayloadToLocal(payload){
-  clearPlannerLocalData();
   Object.keys(payload || {}).forEach(k => {
     localStorage.setItem("jtp_"+k, String(payload[k]));
   });
@@ -1588,8 +1574,9 @@ function autoSyncToCloud(){
   },900);
 }
 
-async function loadTAData(ta){
-  if(!activeUserKey) return false;
+// DIPERBAIKI: HANYA DILAKUKAN SECARA BACKGROUND AGAR TIDAK MERESET BROWSER
+async function loadTADataBackground(ta){
+  if(!activeUserKey) return;
   const taToUse = ta || getCalculatedTA();
   cloudLoading = true;
   try{
@@ -1598,21 +1585,23 @@ async function loadTAData(ta){
       userKey:activeUserKey,
       ta:taToUse
     });
-    if(!res.ok) throw new Error(res.error || "Gagal memuat data.");
-    activeTA = taToUse;
-    localStorage.setItem("jtp_active_ta",taToUse);
-    localStorage.setItem("jtp_auto_ta",taToUse);
-    putPayloadToLocal(res.payload || {});
-    setAcademicYearUI(taToUse);
-    initInputs();
-    renderStudents();
-    renderActivities();
-    renderTargets();
-    renderDPL();
-    renderAnekdot();
-    renderNilai();
-    renderRefleksi();
-    return true;
+    if(res.ok && res.payload) {
+      activeTA = taToUse;
+      localStorage.setItem("jtp_active_ta",taToUse);
+      localStorage.setItem("jtp_auto_ta",taToUse);
+      putPayloadToLocal(res.payload);
+      setAcademicYearUI(taToUse);
+      initInputs();
+      renderStudents();
+      renderActivities();
+      renderTargets();
+      renderDPL();
+      renderAnekdot();
+      renderNilai();
+      renderRefleksi();
+    }
+  }catch(e){
+    console.log("Mode offline: menggunakan data lokal HP/Laptop");
   }finally{
     cloudLoading = false;
   }
@@ -1628,11 +1617,19 @@ function setAcademicYearUI(ta){
   if(footerYr) footerYr.textContent=`TA. ${taToDisplay}`;
 }
 
+// PENGECEKAN SESI LOKAL KETAT - BEBAS RESET & REFRESH
 function checkLoginSession(){
-  const isLoggedIn=localStorage.getItem("jtp_is_logged_in")==="true";
-  const loginScreen=document.getElementById("loginScreen");
-  if(isLoggedIn && activeUserKey && activeUsername) loginScreen.style.display="none";
-  else loginScreen.style.display="flex";
+  const isLoggedIn = localStorage.getItem("jtp_is_logged_in") === "true";
+  const userKey = localStorage.getItem("jtp_account_user_key");
+  const loginScreen = document.getElementById("loginScreen");
+
+  if(isLoggedIn && userKey) {
+    loginScreen.style.display = "none";
+    return true;
+  } else {
+    loginScreen.style.display = "flex";
+    return false;
+  }
 }
 
 function switchAuthTab(type){
@@ -1676,7 +1673,7 @@ async function handleLogin(e){
     document.getElementById("loginScreen").style.display="none";
     setAcademicYearUI(activeTA);
 
-    loadTAData(activeTA);
+    loadTADataBackground(activeTA);
 
   }catch(err){
     alert(err.message || "Login gagal.");
@@ -1742,6 +1739,12 @@ async function handleRegister(e){
 
 function handleLogout(){
   if(!confirm("Apakah Anda yakin ingin keluar dari akun?")) return;
+  
+  localStorage.removeItem("jtp_is_logged_in");
+  localStorage.removeItem("jtp_account_user_key");
+  localStorage.removeItem("jtp_account_username");
+  localStorage.removeItem("jtp_active_ta");
+
   clearPlannerLocalData();
   location.reload();
 }
@@ -2104,37 +2107,37 @@ function renderAbsensi(){
  body.innerHTML = "";
 
  students.forEach((st, i) => {
-   const name = st.name || "";
-   const studentAbs = monthData[i] || {};
-   let daysHtml="";
-   for(let d=1;d<=31;d++){
-     const val=studentAbs[d]||"";
-     daysHtml+=`<td><input type="text" class="day-cell" data-s="${i}" data-d="${d}" value="${esc(val)}" maxlength="1"></td>`;
-   }
-   const tr=document.createElement("tr");
-   tr.id=`absRow_${i}`;
-   tr.innerHTML=`<td style="text-align:center">${i+1}</td>
-     <td style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><b>${esc(name)}</b></td>
-     ${daysHtml}
-     <td style="text-align:center" id="stat_i_${i}">0</td>
-     <td style="text-align:center" id="stat_s_${i}">0</td>
-     <td style="text-align:center" id="stat_a_${i}">0</td>
-     <td style="text-align:center" id="stat_h_${i}">0</td>
-     <td style="text-align:center"><span class="badge success" id="stat_pct_${i}">0%</span></td>`;
-   body.appendChild(tr);
-   calcStudentAbsensi(i);
+    const name = st.name || "";
+    const studentAbs = monthData[i] || {};
+    let daysHtml="";
+    for(let d=1;d<=31;d++){
+      const val=studentAbs[d]||"";
+      daysHtml+=`<td><input type="text" class="day-cell" data-s="${i}" data-d="${d}" value="${esc(val)}" maxlength="1"></td>`;
+    }
+    const tr=document.createElement("tr");
+    tr.id=`absRow_${i}`;
+    tr.innerHTML=`<td style="text-align:center">${i+1}</td>
+      <td style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><b>${esc(name)}</b></td>
+      ${daysHtml}
+      <td style="text-align:center" id="stat_i_${i}">0</td>
+      <td style="text-align:center" id="stat_s_${i}">0</td>
+      <td style="text-align:center" id="stat_a_${i}">0</td>
+      <td style="text-align:center" id="stat_h_${i}">0</td>
+      <td style="text-align:center"><span class="badge success" id="stat_pct_${i}">0%</span></td>`;
+    body.appendChild(tr);
+    calcStudentAbsensi(i);
  });
 
  document.querySelectorAll(".day-cell").forEach(input=>{
-   input.addEventListener("input",e=>{
-     const s=e.target.dataset.s;
-     const d=e.target.dataset.d;
-     const val=e.target.value.toUpperCase();
-     e.target.value=val;
-     saveAbsensiVal(s,d,val);
-     calcStudentAbsensi(s);
-     renderRekap();
-   });
+    input.addEventListener("input",e=>{
+      const s=e.target.dataset.s;
+      const d=e.target.dataset.d;
+      const val=e.target.value.toUpperCase();
+      e.target.value=val;
+      saveAbsensiVal(s,d,val);
+      calcStudentAbsensi(s);
+      renderRekap();
+    });
  });
 }
 
@@ -2151,11 +2154,11 @@ function calcStudentAbsensi(s){
  let countI=0, countS=0, countA=0, countH=0;
 
  Object.values(sData).forEach(v=>{
-   const code=String(v).toUpperCase().trim();
-   if(code==="I") countI++;
-   else if(code==="S") countS++;
-   else if(code==="A") countA++;
-   else if(code==="H" || code==="." || code==="1") countH++;
+    const code=String(v).toUpperCase().trim();
+    if(code==="I") countI++;
+    else if(code==="S") countS++;
+    else if(code==="A") countA++;
+    else if(code==="H" || code==="." || code==="1") countH++;
  });
 
  const totalRecorded=countI+countS+countA+countH;
@@ -2173,8 +2176,8 @@ function calcStudentAbsensi(s){
  if(elA) elA.textContent=countA;
  if(elH) elH.textContent=countH;
  if(elPct){
-   elPct.textContent=`${pct}%`;
-   elPct.className="badge "+(pct<100&&totalRecorded>0?"warning":"success");
+    elPct.textContent=`${pct}%`;
+    elPct.className="badge "+(pct<100&&totalRecorded>0?"warning":"success");
  }
 }
 
@@ -2184,37 +2187,37 @@ function renderRekap(){
  body.innerHTML = "";
 
  students.forEach((st, i) => {
-   const name = st.name || "";
-   let monthCols="";
-   let totalH=0, totalS=0, totalI=0, totalA=0;
+    const name = st.name || "";
+    let monthCols="";
+    let totalH=0, totalS=0, totalI=0, totalA=0;
 
-   monthsKeys.forEach(mKey=>{
-     const mData=JSON.parse(get("absData_"+mKey,"{}"));
-     const sData=mData[i]||{};
-     let hCount=0, sCount=0, iCount=0, aCount=0;
-     Object.values(sData).forEach(v=>{
-       const code=String(v).toUpperCase().trim();
-       if(code==="S") sCount++;
-       else if(code==="I") iCount++;
-       else if(code==="A") aCount++;
-       else if(code==="H" || code==="." || code==="1") hCount++;
-     });
-     totalH += hCount;
-     totalS += sCount;
-     totalI += iCount;
-     totalA += aCount;
-     monthCols+=`<td>${hCount||'-'}</td><td>${sCount||'-'}</td><td>${iCount||'-'}</td><td>${aCount||'-'}</td>`;
-   });
+    monthsKeys.forEach(mKey=>{
+      const mData=JSON.parse(get("absData_"+mKey,"{}"));
+      const sData=mData[i]||{};
+      let hCount=0, sCount=0, iCount=0, aCount=0;
+      Object.values(sData).forEach(v=>{
+        const code=String(v).toUpperCase().trim();
+        if(code==="S") sCount++;
+        else if(code==="I") iCount++;
+        else if(code==="A") aCount++;
+        else if(code==="H" || code==="." || code==="1") hCount++;
+      });
+      totalH += hCount;
+      totalS += sCount;
+      totalI += iCount;
+      totalA += aCount;
+      monthCols+=`<td>${hCount||'-'}</td><td>${sCount||'-'}</td><td>${iCount||'-'}</td><td>${aCount||'-'}</td>`;
+    });
 
-   const tr=document.createElement("tr");
-   tr.innerHTML=`<td style="text-align:center">${i+1}</td>
-     <td style="text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><b>${esc(name)}</b></td>
-     ${monthCols}
-     <td style="font-weight:bold;color:var(--green);background:#05966920">${totalH||'-'}</td>
-     <td style="font-weight:bold;background:#05966915">${totalS||'-'}</td>
-     <td style="font-weight:bold;background:#05966915">${totalI||'-'}</td>
-     <td style="font-weight:bold;background:#05966915">${totalA||'-'}</td>`;
-   body.appendChild(tr);
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td style="text-align:center">${i+1}</td>
+      <td style="text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><b>${esc(name)}</b></td>
+      ${monthCols}
+      <td style="font-weight:bold;color:var(--green);background:#05966920">${totalH||'-'}</td>
+      <td style="font-weight:bold;background:#05966915">${totalS||'-'}</td>
+      <td style="font-weight:bold;background:#05966915">${totalI||'-'}</td>
+      <td style="font-weight:bold;background:#05966915">${totalA||'-'}</td>`;
+    body.appendChild(tr);
  });
 }
 
@@ -2233,9 +2236,9 @@ function renderActivities(){
  saved.forEach((row, r) => {
  const tr = document.createElement("tr");
  if(row[0] === "REST") {
-   tr.innerHTML = `<td><b>${times[r]}</b></td><td colspan="5" style="text-align:center;color:var(--amber);font-weight:800">ISTIRAHAT (MAKAN SIANG & SHOLAT ZUHUR)</td>`;
+    tr.innerHTML = `<td><b>${times[r]}</b></td><td colspan="5" style="text-align:center;color:var(--amber);font-weight:800">ISTIRAHAT (MAKAN SIANG & SHOLAT ZUHUR)</td>`;
  } else {
-   tr.innerHTML = `<td><b>${times[r]}</b></td>` + row.map((v, c) => `<td><input type="text" data-ar="${r}" data-ac="${c}" value="${esc(v)}"></td>`).join("");
+    tr.innerHTML = `<td><b>${times[r]}</b></td>` + row.map((v, c) => `<td><input type="text" data-ar="${r}" data-ac="${c}" value="${esc(v)}"></td>`).join("");
  }
  body.appendChild(tr);
  });
@@ -2248,8 +2251,8 @@ function saveActivities(){
  const arr = [];
  document.querySelectorAll("#activityBody tr").forEach((tr, r) => {
  if(r === 5){
-   arr.push(["REST","REST","REST","REST","REST"]);
-   return;
+    arr.push(["REST","REST","REST","REST","REST"]);
+    return;
  }
  const row = [];
  tr.querySelectorAll("input").forEach(x => row[x.dataset.ac] = String(x.value));
@@ -2266,8 +2269,8 @@ function renderActivityChart(data){
  const TOTAL_COLUMNS = 45;
 
  data.flat().forEach(v => {
-   const n = Number(v);
-   if(n >= 1 && n <= 5) counts[n-1]++;
+    const n = Number(v);
+    if(n >= 1 && n <= 5) counts[n-1]++;
  });
 
  const names = ["Membersamai peserta didik","Mengerjakan administrasi","Rapat koordinasi","Remedial / pengayaan peserta didik","Pengembangan diri"];
@@ -2298,15 +2301,15 @@ function renderTargets(){
  const tr = document.createElement("tr");
  tr.className = "target-row" + (isFail ? " failed" : "");
  tr.innerHTML = `<td>${no}</td><td>${esc(text)}</td>
-   <td style="text-align:center"><input type="text" class="done-input" data-target="${no}" value="${esc(status)}" maxlength="1" placeholder="-"></td>
-   <td style="text-align:center"><span class="badge ${isFail?'danger':'success'}">${isFail?'Tidak Tercapai':'Tercapai'}</span></td>`;
+    <td style="text-align:center"><input type="text" class="done-input" data-target="${no}" value="${esc(status)}" maxlength="1" placeholder="-"></td>
+    <td style="text-align:center"><span class="badge ${isFail?'danger':'success'}">${isFail?'Tidak Tercapai':'Tercapai'}</span></td>`;
  body.appendChild(tr);
  });
  
  document.querySelectorAll(".done-input").forEach(x => x.addEventListener("input", e => {
-   const val = e.target.value.toLowerCase();
-   e.target.value = (val === "x") ? "x" : "";
-   updateTargetState();
+    const val = e.target.value.toLowerCase();
+    e.target.value = (val === "x") ? "x" : "";
+    updateTargetState();
  }));
  updateTargetState();
 }
@@ -2316,18 +2319,18 @@ function updateTargetState(){
  let failCount = 0;
  
  document.querySelectorAll(".done-input").forEach(x => {
-   const no = Number(x.dataset.target);
-   const val = x.value.toLowerCase();
-   targetState[no] = val;
-   if(val === "x") failCount++;
-   
-   const tr = x.closest("tr");
-   const isFail = val === "x";
-   tr.classList.toggle("failed", isFail);
-   
-   const b = tr.querySelector(".badge");
-   b.className = "badge " + (isFail ? 'danger' : 'success');
-   b.textContent = isFail ? 'Tidak Tercapai' : 'Tercapai';
+    const no = Number(x.dataset.target);
+    const val = x.value.toLowerCase();
+    targetState[no] = val;
+    if(val === "x") failCount++;
+    
+    const tr = x.closest("tr");
+    const isFail = val === "x";
+    tr.classList.toggle("failed", isFail);
+    
+    const b = tr.querySelector(".badge");
+    b.className = "badge " + (isFail ? 'danger' : 'success');
+    b.textContent = isFail ? 'Tidak Tercapai' : 'Tercapai';
  });
  
  const key = getTargetStorageKey();
@@ -2358,8 +2361,8 @@ function renderDPL(){
  const tr = document.createElement("tr");
  let colsHtml = "";
  for(let c = 0; c < 8; c++){
-   const val = (saved[r] && saved[r][c]) || "";
-   colsHtml += `<td style="text-align:center"><input type="text" class="dpl-input" data-r="${r}" data-c="${c}" value="${esc(val)}"></td>`;
+    const val = (saved[r] && saved[r][c]) || "";
+    colsHtml += `<td style="text-align:center"><input type="text" class="dpl-input" data-r="${r}" data-c="${c}" value="${esc(val)}"></td>`;
  }
  tr.innerHTML = `<td style="text-align:center">${r+1}</td><td><b>${day}</b></td>${colsHtml}`;
  body.appendChild(tr);
@@ -2386,8 +2389,8 @@ function renderDPLChart(data){
  const counts = [0,0,0,0,0,0,0,0];
  data.forEach(row => {
  row.forEach((v, c) => {
-   const n = Number(v);
-   if(n > 0) counts[c] += n;
+    const n = Number(v);
+    if(n > 0) counts[c] += n;
  });
  });
  const total = counts.reduce((a, b) => a + b, 0) || 1;
@@ -2405,15 +2408,15 @@ function renderAnekdot(){
  body.innerHTML = "";
  
  students.forEach((st, i) => {
-   const name = st.name || "";
-   const item = saved[i] || {};
-   const tr = document.createElement("tr");
-   tr.innerHTML = `<td style="text-align:center">${i+1}</td>
-     <td style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><b>${esc(name)}</b></td>
-     <td><input type="text" class="anekdot-input" data-i="${i}" data-f="tempat" value="${esc(item.tempat||"")}" placeholder="Tempat..."></td>
-     <td><input type="text" class="anekdot-input" data-i="${i}" data-f="waktu" value="${esc(item.waktu||"")}" placeholder="Waktu..."></td>
-     <td><textarea class="anekdot-input" data-i="${i}" data-f="kronologi" placeholder="Kronologis peristiwa...">${esc(item.kronologi||"")}</textarea></td>`;
-   body.appendChild(tr);
+    const name = st.name || "";
+    const item = saved[i] || {};
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td style="text-align:center">${i+1}</td>
+      <td style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><b>${esc(name)}</b></td>
+      <td><input type="text" class="anekdot-input" data-i="${i}" data-f="tempat" value="${esc(item.tempat||"")}" placeholder="Tempat..."></td>
+      <td><input type="text" class="anekdot-input" data-i="${i}" data-f="waktu" value="${esc(item.waktu||"")}" placeholder="Waktu..."></td>
+      <td><textarea class="anekdot-input" data-i="${i}" data-f="kronologi" placeholder="Kronologis peristiwa...">${esc(item.kronologi||"")}</textarea></td>`;
+    body.appendChild(tr);
  });
  document.querySelectorAll(".anekdot-input").forEach(x=>x.addEventListener("input",saveAnekdot));
 }
@@ -2442,25 +2445,25 @@ function renderNilai(){
  body.innerHTML = "";
 
  students.forEach((st, i) => {
-   const name = st.name || "";
-   const nisn = st.nisn || "";
-   const sNilai = saved[i] || {};
-   
-   let mapelCols = "";
-   mapelKeys.forEach(mKey => {
-     const val = sNilai[mKey] || "";
-     mapelCols += `<td style="text-align:center"><input type="text" class="nilai-cell" data-i="${i}" data-m="${mKey}" value="${esc(val)}" placeholder="-"></td>`;
-   });
-   
-   const remedVal = sNilai.remed || "";
-   
-   const tr = document.createElement("tr");
-   tr.innerHTML = `<td style="text-align:center">${i+1}</td>
-     <td style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><b>${esc(name)}</b></td>
-     <td>${esc(nisn)}</td>
-     ${mapelCols}
-     <td style="text-align:center"><input type="text" class="remed-cell" data-i="${i}" data-m="remed" value="${esc(remedVal)}" placeholder="0"></td>`;
-   body.appendChild(tr);
+    const name = st.name || "";
+    const nisn = st.nisn || "";
+    const sNilai = saved[i] || {};
+    
+    let mapelCols = "";
+    mapelKeys.forEach(mKey => {
+      const val = sNilai[mKey] || "";
+      mapelCols += `<td style="text-align:center"><input type="text" class="nilai-cell" data-i="${i}" data-m="${mKey}" value="${esc(val)}" placeholder="-"></td>`;
+    });
+    
+    const remedVal = sNilai.remed || "";
+    
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td style="text-align:center">${i+1}</td>
+      <td style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><b>${esc(name)}</b></td>
+      <td>${esc(nisn)}</td>
+      ${mapelCols}
+      <td style="text-align:center"><input type="text" class="remed-cell" data-i="${i}" data-m="remed" value="${esc(remedVal)}" placeholder="0"></td>`;
+    body.appendChild(tr);
  });
  
  document.querySelectorAll(".nilai-cell, .remed-cell").forEach(x => x.addEventListener("input", saveNilai));
@@ -2484,28 +2487,28 @@ function calcNilaiStats(){
  const averages = [];
  
  mapelKeys.forEach(mKey => {
-   let sum = 0, count = 0, min = null, max = null;
-   
-   saved.forEach(item => {
-     const v = parseVal(item[mKey]);
-     if(v !== null){
-       sum += v;
-       count++;
-       if(min === null || v < min) min = v;
-       if(max === null || v > max) max = v;
-     }
-   });
-   
-   const avg = count > 0 ? sum / count : null;
-   averages.push(avg);
-   
-   const elAvg = document.getElementById("avg_" + mKey);
-   const elMax = document.getElementById("max_" + mKey);
-   const elMin = document.getElementById("min_" + mKey);
-   
-   if(elAvg) elAvg.textContent = formatVal(avg);
-   if(elMax) elMax.textContent = formatVal(max);
-   if(elMin) elMin.textContent = formatVal(min);
+    let sum = 0, count = 0, min = null, max = null;
+    
+    saved.forEach(item => {
+      const v = parseVal(item[mKey]);
+      if(v !== null){
+        sum += v;
+        count++;
+        if(min === null || v < min) min = v;
+        if(max === null || v > max) max = v;
+      }
+    });
+    
+    const avg = count > 0 ? sum / count : null;
+    averages.push(avg);
+    
+    const elAvg = document.getElementById("avg_" + mKey);
+    const elMax = document.getElementById("max_" + mKey);
+    const elMin = document.getElementById("min_" + mKey);
+    
+    if(elAvg) elAvg.textContent = formatVal(avg);
+    if(elMax) elMax.textContent = formatVal(max);
+    if(elMin) elMin.textContent = formatVal(min);
  });
  
  renderNilaiChart(averages);
@@ -2677,16 +2680,16 @@ async function resetPlanner(){
 
   try {
     if (activeUserKey) {
-      const res = await cloudPost({
+      await cloudPost({
         action: "reset_ta_v2",
         userKey: activeUserKey
       });
-
-      if (!res.ok) {
-        throw new Error(res.error || "Gagal mereset data akun di server.");
-      }
     }
 
+    localStorage.removeItem("jtp_is_logged_in");
+    localStorage.removeItem("jtp_account_user_key");
+    localStorage.removeItem("jtp_account_username");
+    localStorage.removeItem("jtp_active_ta");
     clearPlannerLocalData();
 
     alert(`Reset Total Berhasil!\n\nSeluruh tab sheet dan akun pengguna Anda telah terhapus dari server. Aplikasi akan memuat ulang ke layar Login/Pendaftaran.`);
@@ -2702,25 +2705,30 @@ async function resetPlanner(){
   }
 }
 
-(async function init(){
- document.documentElement.dataset.theme="light";
- checkLoginSession();
- initSchoolLogo();
- initAcademicYear();
- initInputs();
- renderStudents();
- renderActivities();
- renderTargets();
- renderDPL();
- renderAnekdot();
- renderNilai();
- renderRefleksi();
- startClock();
- if(localStorage.getItem("jtp_is_logged_in")==="true" && activeUserKey){
-    try{
-      await loadTAData(activeTA || getCalculatedTA());
-    }catch(err){ console.error("Gagal memuat sesi cloud:",err); }
- }
+// PROSES INISIALISASI APPS SAAT DI-REFRESH
+(function init(){
+  document.documentElement.dataset.theme = "light";
+  
+  // 1. Cek Sesi Lokal
+  const isSessionValid = checkLoginSession();
+  
+  // 2. Render tampilan dari data HP/Laptop secara instant
+  initSchoolLogo();
+  initAcademicYear();
+  initInputs();
+  renderStudents();
+  renderActivities();
+  renderTargets();
+  renderDPL();
+  renderAnekdot();
+  renderNilai();
+  renderRefleksi();
+  startClock();
+
+  // 3. Muat data Google Sheets di background tanpa menggangu layar utama
+  if (isSessionValid && activeUserKey) {
+    loadTADataBackground(activeTA || getCalculatedTA());
+  }
 })();
 </script>
 </body>
