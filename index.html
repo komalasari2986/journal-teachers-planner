@@ -29,7 +29,7 @@ button,input,textarea,select{font-family:inherit}
   padding:22px 16px;
   display:flex;
   flex-direction:column;
-  justify-content:space-between;
+  justify-style:space-between;
   position:fixed;
   inset:0 auto 0 0;
   z-index:50;
@@ -295,7 +295,7 @@ footer{color:var(--sub);font-size:10px;text-align:center;padding:24px 0}
 .date-sep { font-weight: 700; color: var(--sub); font-size: 11px; }
 
 .auth-tabs { display: flex; margin-bottom: 20px; border-bottom: 2px solid var(--border); }
-.auth-tab-btn { flex: 1; padding: 10px; border: 0; background: transparent; font-weight: 700; color: var(--sub); cursor: pointer; font-size: 13px; text-align: center; }
+.auth-tab-btn { flex: 1; padding: 10px 4px; border: 0; background: transparent; font-weight: 700; color: var(--sub); cursor: pointer; font-size: 11.5px; text-align: center; }
 .auth-tab-btn.active { color: var(--green); border-bottom: 2px solid var(--green); margin-bottom: -2px; }
 
 .password-box { position: relative; display: flex; align-items: center; }
@@ -605,7 +605,7 @@ th { border-color: inherit !important; }
 </head>
 <body>
 
-<!-- OVERLAY AUTH (LOGIN & DAFTAR) -->
+<!-- OVERLAY AUTH (LOGIN, DAFTAR, & RESET PASSWORD) -->
 <div id="loginScreen" style="position:fixed; inset:0; z-index:9999; background:linear-gradient(135deg,#047857,#0f172a); display:flex; align-items:center; justify-content:center; padding:20px; overflow-y:auto;">
   <div style="background:#fff; border-radius:16px; width:100%; max-width:420px; padding:25px; box-shadow:0 10px 25px rgba(0,0,0,0.2); margin:auto;">
     
@@ -620,6 +620,7 @@ th { border-color: inherit !important; }
     <div class="auth-tabs">
       <button class="auth-tab-btn active" id="tabBtnLogin" onclick="switchAuthTab('login')">Masuk (Login)</button>
       <button class="auth-tab-btn" id="tabBtnRegister" onclick="switchAuthTab('register')">Daftar Akun Baru</button>
+      <button class="auth-tab-btn" id="tabBtnResetPass" onclick="switchAuthTab('resetPass')">Reset Password</button>
     </div>
 
     <!-- FORM LOGIN -->
@@ -633,7 +634,7 @@ th { border-color: inherit !important; }
           <label>Username</label>
           <input type="text" id="loginUsername" required placeholder="Tuliskan username Anda..." oninput="capitalizeInput(this)">
         </div>
-        <div class="field" style="margin-bottom:20px;">
+        <div class="field" style="margin-bottom:10px;">
           <label>Password</label>
           <div class="password-box">
             <input type="password" id="loginPassword" required placeholder="Tuliskan Password Anda...">
@@ -641,6 +642,9 @@ th { border-color: inherit !important; }
               <i class="fa-regular fa-eye"></i>
             </button>
           </div>
+        </div>
+        <div style="text-align:right; margin-bottom:20px;">
+          <a href="javascript:void(0)" onclick="switchAuthTab('resetPass')" style="font-size:11px; color:var(--green); font-weight:700; text-decoration:none;">Lupa Password?</a>
         </div>
         <button type="submit" class="btn" style="width:100%; justify-content:center; padding:12px;" id="btnLoginSubmit">
           <i class="fa-solid fa-right-to-bracket"></i> Masuk Aplikasi
@@ -674,6 +678,32 @@ th { border-color: inherit !important; }
         </div>
         <button type="submit" class="btn" style="width:100%; justify-content:center; padding:12px;" id="btnRegSubmit">
           <i class="fa-solid fa-user-plus"></i> Simpan &amp; Buat Akun
+        </button>
+      </form>
+    </div>
+
+    <!-- FORM RESET / LUPA PASSWORD -->
+    <div id="authResetPassForm" style="display:none;">
+      <div style="text-align:center; margin-bottom:18px;">
+        <h2 style="font-size:16px; color:#0f172a; font-weight:800;">Reset Password</h2>
+        <p style="font-size:11px; color:#64748b; margin-top:3px;">Masukkan Username dan Password Baru Anda</p>
+      </div>
+      <form onsubmit="handleResetPassword(event)">
+        <div class="field" style="margin-bottom:14px;">
+          <label>Username Terdaftar</label>
+          <input type="text" id="resetUsername" required placeholder="Tuliskan username Anda..." oninput="capitalizeInput(this)">
+        </div>
+        <div class="field" style="margin-bottom:20px;">
+          <label>Password Baru</label>
+          <div class="password-box">
+            <input type="password" id="resetNewPassword" required placeholder="Tuliskan Password Baru Anda...">
+            <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('resetNewPassword', this)">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="btn" style="width:100%; justify-content:center; padding:12px;" id="btnResetPassSubmit">
+          <i class="fa-solid fa-key"></i> Simpan Password Baru
         </button>
       </form>
     </div>
@@ -1472,7 +1502,7 @@ th { border-color: inherit !important; }
 
 <script>
 // URL APPS SCRIPT
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyf2T0OEngi79n0tC7p37lcDYZnFlk1QecZ_YXl1tRg895qEByMnyF86-mzrVfguhVm/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzfAETKWFPYVkC0_-770bpZleEb5mX0vQ074BJmB31wdxWEQvS9huhx57-tCXyHsaOZ/exec";
 
 let syncTimeout = null;
 let cloudLoading = false;
@@ -1574,7 +1604,6 @@ function autoSyncToCloud(){
   },900);
 }
 
-// DIPERBAIKI: HANYA DILAKUKAN SECARA BACKGROUND AGAR TIDAK MERESET BROWSER
 async function loadTADataBackground(ta){
   if(!activeUserKey) return;
   const taToUse = ta || getCalculatedTA();
@@ -1617,7 +1646,6 @@ function setAcademicYearUI(ta){
   if(footerYr) footerYr.textContent=`TA. ${taToDisplay}`;
 }
 
-// PENGECEKAN SESI LOKAL KETAT - BEBAS RESET & REFRESH
 function checkLoginSession(){
   const isLoggedIn = localStorage.getItem("jtp_is_logged_in") === "true";
   const userKey = localStorage.getItem("jtp_account_user_key");
@@ -1633,16 +1661,26 @@ function checkLoginSession(){
 }
 
 function switchAuthTab(type){
-  const tabLogin=document.getElementById("tabBtnLogin");
-  const tabReg=document.getElementById("tabBtnRegister");
-  const formLogin=document.getElementById("authLoginForm");
-  const formReg=document.getElementById("authRegisterForm");
-  if(type==="login"){
-    tabLogin.classList.add("active");tabReg.classList.remove("active");
-    formLogin.style.display="block";formReg.style.display="none";
-  }else{
-    tabReg.classList.add("active");tabLogin.classList.remove("active");
-    formReg.style.display="block";formLogin.style.display="none";
+  const tabLogin = document.getElementById("tabBtnLogin");
+  const tabReg = document.getElementById("tabBtnRegister");
+  const tabReset = document.getElementById("tabBtnResetPass");
+  
+  const formLogin = document.getElementById("authLoginForm");
+  const formReg = document.getElementById("authRegisterForm");
+  const formReset = document.getElementById("authResetPassForm");
+
+  [tabLogin, tabReg, tabReset].forEach(btn => btn?.classList.remove("active"));
+  [formLogin, formReg, formReset].forEach(form => form ? form.style.display = "none" : null);
+
+  if (type === "login") {
+    tabLogin.classList.add("active");
+    formLogin.style.display = "block";
+  } else if (type === "register") {
+    tabReg.classList.add("active");
+    formReg.style.display = "block";
+  } else if (type === "resetPass") {
+    tabReset.classList.add("active");
+    formReset.style.display = "block";
   }
 }
 
@@ -1734,6 +1772,45 @@ async function handleRegister(e){
   }finally{
     btn.disabled=false;
     btn.innerHTML=orig;
+  }
+}
+
+async function handleResetPassword(e) {
+  e.preventDefault();
+  const btn = document.getElementById("btnResetPassSubmit");
+  const orig = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Memperbarui...`;
+
+  try {
+    const rawUsername = document.getElementById("resetUsername").value.trim();
+    const username = rawUsername.charAt(0).toUpperCase() + rawUsername.slice(1);
+    const newPassword = document.getElementById("resetNewPassword").value.trim();
+
+    if (newPassword.length < 4) {
+      throw new Error("Password baru minimal 4 karakter.");
+    }
+
+    const res = await cloudPost({
+      action: "reset_password_v2",
+      username: username,
+      newPassword: newPassword
+    });
+
+    if (!res.ok) throw new Error(res.error || "Gagal mereset password.");
+
+    alert("Password berhasil diperbarui! Silakan login dengan password baru Anda.");
+    
+    document.getElementById("loginUsername").value = username;
+    document.getElementById("loginPassword").value = newPassword;
+    
+    switchAuthTab("login");
+
+  } catch (err) {
+    alert(err.message || "Gagal memperbarui password.");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = orig;
   }
 }
 
@@ -2709,10 +2786,8 @@ async function resetPlanner(){
 (function init(){
   document.documentElement.dataset.theme = "light";
   
-  // 1. Cek Sesi Lokal
   const isSessionValid = checkLoginSession();
   
-  // 2. Render tampilan dari data HP/Laptop secara instant
   initSchoolLogo();
   initAcademicYear();
   initInputs();
@@ -2725,7 +2800,6 @@ async function resetPlanner(){
   renderRefleksi();
   startClock();
 
-  // 3. Muat data Google Sheets di background tanpa menggangu layar utama
   if (isSessionValid && activeUserKey) {
     loadTADataBackground(activeTA || getCalculatedTA());
   }
