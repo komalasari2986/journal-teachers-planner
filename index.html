@@ -224,8 +224,9 @@ footer{color:var(--sub);font-size:10px;text-align:center;padding:24px 0}
 .anekdot-table input,.anekdot-table textarea{width:100%;background:transparent;border:0;outline:none;color:var(--text);font-size:11px;padding:4px}
 .anekdot-table textarea{resize:vertical;min-height:38px}
 
-.nilai-table input.nilai-cell{width:52px;text-align:center;background:var(--input);border:1px solid var(--border);border-radius:5px;color:var(--text);padding:4px;font-size:11px}
-.nilai-table input.remed-cell{width:40px;text-align:center;background:var(--input);border:1px solid var(--border);border-radius:5px;color:var(--text);padding:4px;font-size:11px}
+.nilai-table input.nilai-cell{width:52px;text-align:center;background:var(--input);border:1px solid var(--border);border-radius:5px;color:var(--text);padding:4px;font-size:11px;transition: all 0.2s ease;}
+.nilai-table input.nilai-cell.under-kkm{background:#ffe4e6 !important; border-color:#f43f5e !important; color:#e11d48 !important; font-weight:800;}
+.nilai-table input.remed-cell{width:40px;text-align:center;background:#f1f5f9;border:1px solid var(--border);border-radius:5px;color:var(--text);padding:4px;font-size:11px;font-weight:700;}
 
 .refleksi-phase-title { font-weight:800; font-size:12px; text-transform:uppercase; color:var(--green); letter-spacing:1px; margin-bottom:8px; display:flex; align-items:center; gap:6px; }
 .refleksi-subtext { font-size:11px; color:var(--sub); margin-bottom:10px; font-style:italic; }
@@ -1153,7 +1154,28 @@ th { border-color: inherit !important; }
       <div class="section-title"><i class="fa-solid fa-graduation-cap"></i> Laporan Nilai Formatif (Harian)</div>
       <div class="card-sub">Daftar Nilai Formatif Peserta Didik per Pekan</div>
     </div>
-    <span class="badge success"><i class="fa-solid fa-floppy-disk"></i> Auto Save</span>
+    <div class="actions">
+      <!-- TOMBOL PASTE NILAI -->
+      <button class="btn amber" onclick="togglePasteNilaiBox()"><i class="fa-solid fa-paste"></i> Paste Nilai dari Excel</button>
+      <span class="badge success"><i class="fa-solid fa-floppy-disk"></i> Auto Save</span>
+    </div>
+  </div>
+
+  <!-- KOTAK PASTE DATA NILAI EXCEL -->
+  <div id="pasteNilaiBoxContainer" class="card" style="display:none; background:#fffbe8; border:1px solid #fde68a;">
+    <div class="card-title" style="color:var(--amber)"><i class="fa-solid fa-clipboard"></i> Tempel (Paste) Data Nilai dari Excel</div>
+    <div class="card-sub" style="margin-bottom:10px">
+      Blok/Copy baris nilai dari Excel sesuai urutan mapel: <br>
+      <b>[PAI | B.INA | MTK | IPAS | SENI | PJOK | B.ING | SUNDA | ARAB | TIK]</b><br>
+      Tekan <b>Ctrl + C</b> di Excel, tempelkan (<b>Ctrl + V</b>) pada kotak di bawah ini, lalu klik <b>Proses Tempel Nilai</b>.
+    </div>
+    <div class="field">
+      <textarea id="pasteNilaiInputText" placeholder="Tempelkan baris/kolom nilai dari Excel di sini..." style="height:120px; background:#fff;"></textarea>
+    </div>
+    <div style="margin-top:10px; display:flex; gap:8px;">
+      <button class="btn" onclick="processPastedNilai()"><i class="fa-solid fa-check"></i> Proses Tempel Nilai</button>
+      <button class="btn secondary" onclick="togglePasteNilaiBox()">Batal</button>
+    </div>
   </div>
 
   <div class="card">
@@ -1169,7 +1191,7 @@ th { border-color: inherit !important; }
       <div class="field"><label>Kelas / Semester</label><input type="text" data-save="nilai_kelas" placeholder="Isi Kelas / Semester..."></div>
     </div>
     <div class="card-title" style="margin-bottom:6px">Tabel Nilai Formatif Per Mapel</div>
-    <div class="card-sub" style="margin-bottom:12px">Isi angka nilai (0-100) per mata pelajaran. Kolom <b>Remedial</b> diisi jumlah mapel yang diremedial. Rata-rata, Nilai Tertinggi, dan Nilai Terendah dihitung otomatis!</div>
+    <div class="card-sub" style="margin-bottom:12px">Isi angka nilai (0-100) per mata pelajaran. Nilai di bawah KKM (<b>&lt; 75</b>) otomatis <b>berwarna merah</b> dan jumlah <b>Remedial</b> terhitung otomatis!</div>
     <div class="table-wrap">
       <table class="nilai-table">
         <thead>
@@ -1502,7 +1524,7 @@ th { border-color: inherit !important; }
 
 <script>
 // URL APPS SCRIPT
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzfAETKWFPYVkC0_-770bpZleEb5mX0vQ074BJmB31wdxWEQvS9huhx57-tCXyHsaOZ/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwym691JCfPu5E_1InTAcllnxCyTB1axaBv4BXyBKk-ui8Jahlu-AksJNgekjlUi2Ck/exec";
 
 let syncTimeout = null;
 let cloudLoading = false;
@@ -2527,24 +2549,87 @@ function renderNilai(){
     const sNilai = saved[i] || {};
     
     let mapelCols = "";
+    let remedCount = 0;
+
     mapelKeys.forEach(mKey => {
       const val = sNilai[mKey] || "";
-      mapelCols += `<td style="text-align:center"><input type="text" class="nilai-cell" data-i="${i}" data-m="${mKey}" value="${esc(val)}" placeholder="-"></td>`;
+      const valNum = parseVal(val);
+      const isUnderKKM = valNum !== null && valNum < 75;
+
+      if(isUnderKKM) remedCount++;
+
+      mapelCols += `<td style="text-align:center">
+        <input type="text" class="nilai-cell ${isUnderKKM ? 'under-kkm' : ''}" data-i="${i}" data-m="${mKey}" value="${esc(val)}" placeholder="-">
+      </td>`;
     });
-    
-    const remedVal = sNilai.remed || "";
     
     const tr = document.createElement("tr");
     tr.innerHTML = `<td style="text-align:center">${i+1}</td>
       <td style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><b>${esc(name)}</b></td>
       <td>${esc(nisn)}</td>
       ${mapelCols}
-      <td style="text-align:center"><input type="text" class="remed-cell" data-i="${i}" data-m="remed" value="${esc(remedVal)}" placeholder="0"></td>`;
+      <td style="text-align:center"><input type="text" class="remed-cell" id="remed_count_${i}" value="${remedCount}" readonly></td>`;
     body.appendChild(tr);
  });
  
- document.querySelectorAll(".nilai-cell, .remed-cell").forEach(x => x.addEventListener("input", saveNilai));
+ document.querySelectorAll(".nilai-cell").forEach(x => x.addEventListener("input", saveNilai));
  calcNilaiStats();
+}
+
+function togglePasteNilaiBox() {
+  const box = document.getElementById("pasteNilaiBoxContainer");
+  if (box.style.display === "none" || !box.style.display) {
+    box.style.display = "block";
+    document.getElementById("pasteNilaiInputText").focus();
+  } else {
+    box.style.display = "none";
+  }
+}
+
+function processPastedNilai() {
+  const text = document.getElementById("pasteNilaiInputText").value;
+  if (!text.trim()) {
+    alert("Silakan tempelkan data nilai terlebih dahulu.");
+    return;
+  }
+
+  const lines = text.split(/\r?\n/).filter(line => line.trim().length > 0);
+
+  if (lines.length === 0) {
+    alert("Tidak ada data nilai valid yang ditemukan.");
+    return;
+  }
+
+  const key = getNilaiStorageKey();
+  const students = getStudentsData();
+  let saved = JSON.parse(get(key, JSON.stringify(defaultNilaiData)));
+
+  students.forEach((st, idx) => {
+    if (!saved[idx]) saved[idx] = {};
+  });
+
+  const mapelsOrder = ["pai", "bina", "mtk", "ipas", "seni", "pjok", "bing", "sunda", "arab", "tik"];
+
+  lines.forEach((line, index) => {
+    if (index < students.length) {
+      const cols = line.split("\t").map(c => c.trim());
+
+      cols.forEach((val, colIdx) => {
+        if (colIdx < mapelsOrder.length) {
+          const mapelKey = mapelsOrder[colIdx];
+          saved[index][mapelKey] = val;
+        }
+      });
+    }
+  });
+
+  set(key, JSON.stringify(saved));
+  renderNilai();
+
+  document.getElementById("pasteNilaiInputText").value = "";
+  togglePasteNilaiBox();
+
+  alert(`Berhasil mengimpor nilai untuk ${Math.min(lines.length, students.length)} siswa!`);
 }
 
 function parseVal(v){
@@ -2594,10 +2679,32 @@ function calcNilaiStats(){
 function saveNilai(){
  const arr = [];
  document.querySelectorAll("#nilaiBody tr").forEach((tr, i) => {
- const item = {};
- tr.querySelectorAll("input").forEach(x => item[x.dataset.m] = String(x.value));
- arr[i] = item;
+   const item = {};
+   let remedCount = 0;
+
+   tr.querySelectorAll("input.nilai-cell").forEach(x => {
+     const mKey = x.dataset.m;
+     const val = String(x.value);
+     item[mKey] = val;
+
+     const valNum = parseVal(val);
+     const isUnderKKM = valNum !== null && valNum < 75;
+
+     if (isUnderKKM) {
+       remedCount++;
+       x.classList.add("under-kkm");
+     } else {
+       x.classList.remove("under-kkm");
+     }
+   });
+
+   item.remed = String(remedCount);
+   const remedInput = document.getElementById(`remed_count_${i}`);
+   if(remedInput) remedInput.value = remedCount;
+
+   arr[i] = item;
  });
+
  const key = getNilaiStorageKey();
  set(key, JSON.stringify(arr));
  calcNilaiStats();
