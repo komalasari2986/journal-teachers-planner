@@ -22,6 +22,72 @@ body{font-family:'Lexend',sans-serif;background:var(--bg);color:var(--text);min-
 button,input,textarea,select{font-family:inherit}
 .app{display:flex;min-height:100vh}
 
+/* ======================================================
+   STYLING OVERLAY MAINTENANCE MODE
+   ====================================================== */
+.maintenance-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  color: #ffffff;
+  text-align: center;
+}
+.maintenance-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  padding: 40px 30px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+.maintenance-icon-box {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: rgba(217, 119, 6, 0.15);
+  border: 2px solid #d97706;
+  color: #f59e0b;
+  display: grid;
+  place-items: center;
+  font-size: 34px;
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.25);
+}
+.maintenance-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
+.maintenance-text {
+  font-size: 12.5px;
+  color: #cbd5e1;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+.maintenance-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(217, 119, 6, 0.2);
+  color: #fbbf24;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 18px;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
 .sidebar{
   width:270px;
   background:var(--card);
@@ -169,7 +235,6 @@ h1{font-size:27px;line-height:1.2;margin-top:5px;color:var(--text)}
   position: relative;
 }
 
-/* FIX BUG BUG DI SINI: DIBENAHI MENJADI 9px */
 .clock-dot{
   position: absolute;
   top: 2px;
@@ -539,7 +604,7 @@ th { border-color: inherit !important; }
   }
 
   .sidebar, .topbar, .btn, .btn-back-home, footer, .section-head, 
-  .mobile-action-group, .clock, .btn-toggle-sidebar, #loginScreen {
+  .mobile-action-group, .clock, .btn-toggle-sidebar, #loginScreen, #maintenanceOverlay {
     display: none !important;
   }
 
@@ -635,6 +700,31 @@ th { border-color: inherit !important; }
 </style>
 </head>
 <body>
+
+<!-- OVERLAY MAINTENANCE MODE -->
+<div id="maintenanceOverlay" class="maintenance-overlay" style="display:none;">
+  <div class="maintenance-card">
+    <div class="maintenance-icon-box">
+      <i class="fa-solid fa-screwdriver-wrench fa-spin" style="--fa-animation-duration: 4s;"></i>
+    </div>
+    <div class="maintenance-badge">
+      <i class="fa-solid fa-triangle-exclamation"></i> Pemeliharaan Sistem Berjalan
+    </div>
+    <h1 class="maintenance-title">Sistem Sedang Pemeliharaan</h1>
+    <p class="maintenance-text">
+      Aplikasi <b>Journal Teachers Planner</b> saat ini sedang dalam proses pembaruan data dan perawatan rutin sistem untuk meningkatkan kinerja.<br><br>
+      Silakan kembali lagi dalam beberapa saat. Terima kasih atas kesabaran Anda.
+    </p>
+    <div style="display:flex; justify-content:center; gap:10px;">
+      <button class="btn secondary" onclick="location.reload()" style="background:rgba(255,255,255,0.1); color:#fff; border-color:rgba(255,255,255,0.2);">
+        <i class="fa-solid fa-rotate-right"></i> Muat Ulang Halaman
+      </button>
+      <button class="btn amber" onclick="promptBypassMaintenance()">
+        <i class="fa-solid fa-key"></i> Akses Developer
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- OVERLAY AUTH -->
 <div id="loginScreen" style="position:fixed; inset:0; z-index:9999; background:linear-gradient(135deg,#047857,#0f172a); display:flex; align-items:center; justify-content:center; padding:20px; overflow-y:auto;">
@@ -1660,7 +1750,37 @@ th { border-color: inherit !important; }
 </div>
 
 <script>
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmwJo9uoSEZY5DOPMC_rKkhhMWaMrzHwIW5zrXMHSuZHHy3l7-Ycr09l3G8IsaImjB/exec";
+/* ======================================================
+   KONTROL MODE MAINTENANCE / PEMELIHARAAN SISTEM
+   - Ubah `IS_MAINTENANCE` ke `true` jika sedang perbaikan
+   - Ubah `IS_MAINTENANCE` ke `false` jika berjalan normal
+   ====================================================== */
+let IS_MAINTENANCE = false; // <-- UBAH KE true / false DI SINI!
+const MAINTENANCE_BYPASS_KEY = "admin123"; // Password bypass developer
+
+function checkMaintenanceStatus() {
+  const isBypassed = sessionStorage.getItem("jtp_maintenance_bypassed") === "true";
+  const overlay = document.getElementById("maintenanceOverlay");
+  
+  if (IS_MAINTENANCE && !isBypassed) {
+    if (overlay) overlay.style.display = "flex";
+  } else {
+    if (overlay) overlay.style.display = "none";
+  }
+}
+
+function promptBypassMaintenance() {
+  const pass = prompt("Masukkan Kunci Akses Developer / Admin:");
+  if (pass === MAINTENANCE_BYPASS_KEY) {
+    sessionStorage.setItem("jtp_maintenance_bypassed", "true");
+    checkMaintenanceStatus();
+    alert("Kunci Akses Diterima! Anda masuk sebagai Developer.");
+  } else if (pass !== null) {
+    alert("Kunci Akses Salah!");
+  }
+}
+
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyDTRsWLzNXw1xf3k0-B8hmCfUzDwIleN6cwJkvCpeAYJnf3nL-BjISbEEYXzI-RQnm/exec";
 
 let syncTimeout = null;
 let cloudLoading = false;
@@ -3288,6 +3408,7 @@ async function resetPlanner(){
 (function init(){
   document.documentElement.dataset.theme = "light";
   
+  checkMaintenanceStatus(); // Cek status maintenance saat aplikasi dimuat
   const isSessionValid = checkLoginSession();
   
   initSchoolLogo();
