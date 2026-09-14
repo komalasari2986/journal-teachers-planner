@@ -511,30 +511,8 @@ table { border-collapse: collapse !important; border: 1px solid #cbd5e1 !importa
 th, td { border: 1px solid #cbd5e1 !important; }
 th { border-color: inherit !important; }
 
-.print-help-note {
-  display:flex;
-  align-items:flex-start;
-  gap:8px;
-  margin-top:8px;
-  padding:8px 10px;
-  max-width:520px;
-  font-size:11px;
-  line-height:1.4;
-  color:#475569;
-  background:#f8fafc;
-  border:1px solid #cbd5e1;
-  border-radius:8px;
-}
-.print-help-note i { color:var(--green); margin-top:2px; }
-
-/* KOMPATIBILITAS EPSON L1210 SERIES - A4 */
-@page {
-    size: A4 portrait;
-    margin: 10mm 12mm 10mm 12mm;
-}
-
 @media print {
-  @page { size: A4 portrait; margin: 10mm 12mm 10mm 12mm; }
+  @page { size: 215mm 330mm portrait; margin: 10mm 12mm 10mm 12mm; }
   *, *::before, *::after { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; box-sizing:border-box !important; }
   html, body { background:#fff !important; color:#000 !important; margin:0 !important; padding:0 !important; width:100% !important; min-height:0 !important; font-size:9pt !important; line-height:1.3 !important; }
   .sidebar,.topbar,.btn,.btn-back-home,footer,.section-head,.mobile-action-group,.clock,.btn-toggle-sidebar,#loginScreen { display:none !important; }
@@ -542,7 +520,6 @@ th { border-color: inherit !important; }
   .page:not(#print_view) { display:none !important; }
   #print_view { display:block !important; }
   .print-report-container { width:100% !important; max-width:none !important; padding:0 !important; margin:0 !important; border:none !important; border-radius:0 !important; background:#fff !important; }
-  .print-help-note { display:none !important; }
   .print-page-break,.print-page-1 { break-before:auto !important; page-break-before:auto !important; break-after:auto !important; page-break-after:auto !important; margin-top:0 !important; padding-top:0 !important; }
   .print-section-title { break-after:avoid !important; page-break-after:avoid !important; margin-top:9px !important; margin-bottom:5px !important; font-size:9.5pt !important; }
   .print-grid { gap:7px !important; margin-bottom:6px !important; }
@@ -551,24 +528,6 @@ th { border-color: inherit !important; }
   .print-note-text { display:block !important; white-space:pre-wrap !important; overflow-wrap:anywhere !important; word-break:break-word !important; font-size:9pt !important; line-height:1.35 !important; margin-top:3px !important; }
   .ttd-grid { margin-top:16px !important; break-inside:avoid !important; page-break-inside:avoid !important; }
   .ttd-space { height:55px !important; }
-  /* Penuhi lembar 1 A4 saat catatan masih kosong, tetapi tetap fleksibel jika catatan memanjang. */
-  .print-page-1 {
-    min-height: 277mm !important;
-    display: flex !important;
-    flex-direction: column !important;
-  }
-  .print-page-1 > .print-grid {
-    align-items: stretch !important;
-    flex: 1 1 auto !important;
-  }
-  .print-page-1 > .print-grid .print-box {
-    min-height: 58mm !important;
-    height: 100% !important;
-  }
-  .print-page-1 > .print-section-title {
-    flex: 0 0 auto !important;
-  }
-
   .print-logo { width:105px !important; height:105px !important; margin-bottom:5px !important; }
   #printActivityChart,#printDplChart,#printNilaiChart { break-inside:avoid !important; page-break-inside:avoid !important; }
 }
@@ -1455,21 +1414,22 @@ th { border-color: inherit !important; }
   </div>
 </section>
 
-<!-- RINGKASAN LAPORAN PLANNER (FORMAT A4 OTOMATIS) -->
+<!-- RINGKASAN LAPORAN PLANNER (FORMAT 2 LEMBAR F4 PENUH OTOMATIS) -->
 <section id="print_view" class="page">
   <div class="section-head" style="margin-bottom:12px;">
+    <div>
+      <div class="card-sub" style="color:var(--green); font-weight:700;">
+        <i class="fa-solid fa-pen-to-square"></i> Anda bisa langsung mengetik catatan di bawah ini. Laporan otomatis berformat F4 dan terbagi menjadi 2 Lembar Penuh!
+      </div>
+    </div>
     <div class="actions">
       <button class="btn" onclick="window.print()"><i class="fa-solid fa-print"></i> Cetak Laporan Otomatis F4 (2 Lembar)</button>
-      <div class="print-help-note">
-        <i class="fa-solid fa-circle-info"></i>
-        <span><b>Catatan untuk guru:</b> Untuk mencetak menggunakan <b>Epson L1210 Series</b>, pilih ukuran kertas <b>Legal (8,5 × 14 inci / 216 × 356 mm)</b> dan orientasi <b>Portrait</b>. Jika Legal belum muncul di daftar ukuran kertas, buka <b>Preferensi Printer Epson L1210 Series</b> lalu pilih ukuran kertas A4. Saat memilih <b>Simpan sebagai PDF</b>, gunakan ukuran kertas A4 dengan orientasi Portrait agar hasil laporan tetap sesuai.</span>
-      </div>
     </div>
   </div>
 
   <div class="print-report-container" id="printableWordContent">
     
-    <!-- HALAMAN 1 A4 -->
+    <!-- HALAMAN 1 F4 -->
     <div class="print-page-1">
       <div style="text-align:center; border-bottom:2px solid var(--text); padding-bottom:4px; margin-bottom:10px;">
         <img class="print-logo school-logo" src="assets/logo-sekolah.jpg" alt="Logo SD Islam Ramah Anak">
@@ -1529,7 +1489,7 @@ th { border-color: inherit !important; }
       </div>
     </div>
 
-    <!-- HALAMAN 2 A4 -->
+    <!-- HALAMAN 2 F4 -->
     <div class="print-page-break">
       <div class="print-section-title" style="margin-top:0;">IV. Capaian 8 DPL Peserta Didik</div>
       <div class="print-grid">
@@ -1605,7 +1565,7 @@ th { border-color: inherit !important; }
 </div>
 
 <script>
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw3cchJSZoNeZX3yE_Q0gqjxa3y5PAbvBvRw78Mj8L4UMi7lZqhn58EH3tZSR9Nx9SW/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzQ9uoY62DNKPt5FhTVpnIxGs5oGo8nwJRnna66Re_FbzAPPZ4kVNBvty-xbibXZWgp/exec";
 
 let syncTimeout = null;
 let cloudLoading = false;
