@@ -168,11 +168,13 @@ h1{font-size:27px;line-height:1.2;margin-top:5px;color:var(--text)}
   font-size: 18px;
   position: relative;
 }
+
+/* FIX BUG BUG DI SINI: DIBENAHI MENJADI 9px */
 .clock-dot{
   position: absolute;
   top: 2px;
   right: 2px;
-  width: 99px;
+  width: 9px;
   height: 9px;
   border-radius: 50%;
   background: #10b981;
@@ -180,6 +182,7 @@ h1{font-size:27px;line-height:1.2;margin-top:5px;color:var(--text)}
   box-shadow: 0 0 0 3px #04785720;
   animation: pulse 1.8s infinite;
 }
+
 .clock-info{
   display: flex;
   flex-direction: column;
@@ -400,7 +403,6 @@ input.day-cell:disabled {
 .mapel-item{display:flex;align-items:center;gap:8px;background:var(--input);padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:11px;cursor:pointer;font-weight:600}
 .mapel-item input{cursor:pointer}
 
-/* PRINTER FORM LAYOUT (PROPORSI A4 INTERAKSI) */
 .print-report-container{background:#fff;padding:18px;border-radius:8px;border:1px solid var(--border);max-width:210mm;margin:0 auto;}
 .print-section-title{font-size:11px;font-weight:800;color:var(--green);margin-bottom:5px;margin-top:8px;border-bottom:1.5px solid var(--green);padding-bottom:1px;text-transform:uppercase;break-inside:avoid;page-break-inside:avoid;}
 .print-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
@@ -511,7 +513,6 @@ table { border-collapse: collapse !important; border: 1px solid #cbd5e1 !importa
 th, td { border: 1px solid #cbd5e1 !important; }
 th { border-color: inherit !important; }
 
-/* MEDIA PRINT KHUSUS A4 - PROPORSI IDEAL 1 LEMBAR */
 @media print {
   @page {
     size: A4 portrait !important;
@@ -569,7 +570,6 @@ th { border-color: inherit !important; }
     justify-content: space-between !important;
   }
 
-  /* REVISI UKURAN LOGO DIPERBESAR SEDIKIT (65px) */
   .print-logo {
     width: 65px !important;
     height: 65px !important;
@@ -603,7 +603,6 @@ th { border-color: inherit !important; }
 
   .print-box textarea { display: none !important; }
 
-  /* BATAS CATATAN HINGGA 3 BARIS SEHINGGA TEKS TETAP DIBACA JELAS */
   .print-note-text {
     display: -webkit-box !important;
     -webkit-line-clamp: 3 !important;
@@ -1516,7 +1515,7 @@ th { border-color: inherit !important; }
   </div>
 </section>
 
-<!-- RINGKASAN LAPORAN PLANNER (FORMAT EXACT 1 LEMBAR A4 - UNIFORM SIZE) -->
+<!-- RINGKASAN LAPORAN PLANNER -->
 <section id="print_view" class="page">
   <div class="section-head" style="margin-bottom:12px;">
     <div>
@@ -1531,7 +1530,6 @@ th { border-color: inherit !important; }
 
   <div class="print-report-container" id="printableWordContent">
     
-    <!-- HEADER 1 LEMBAR A4 -->
     <div>
       <div style="text-align:center; border-bottom:1.5px solid var(--text); padding-bottom:3px; margin-bottom:5px;">
         <img class="print-logo school-logo" src="assets/logo-sekolah.jpg" alt="Logo SD Islam Ramah Anak">
@@ -1614,10 +1612,8 @@ th { border-color: inherit !important; }
         </div>
       </div>
 
-      <!-- BAGIAN VI: RINGKASAN JURNAL REFLEKSI GURU (DENGAN TATA LETAK 2 KOLOM SESUAI INSTRUKSI) -->
       <div class="print-section-title">VI. Ringkasan Jurnal Refleksi Guru</div>
       <div class="print-grid" style="grid-template-columns:1fr 1fr; gap:6px; margin-bottom:3px;">
-        <!-- KOLOM KIRI: APALAH YANG BERJALAN BAIK, TANTANGAN, TINDAK LANJUT -->
         <div class="print-box">
           <div style="font-size:8pt; line-height:1.35;">
             <div style="margin-bottom:3px;"><b>Apa yang berjalan baik:</b><br><span id="printRefBaik">-</span></div>
@@ -1626,7 +1622,6 @@ th { border-color: inherit !important; }
           </div>
         </div>
 
-        <!-- KOLOM KANAN: MAPEL, MATERI, TARGET KEPUASAN, METODE -->
         <div class="print-box">
           <div style="font-size:8pt; line-height:1.35;">
             <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:3px;">
@@ -1642,7 +1637,6 @@ th { border-color: inherit !important; }
       </div>
     </div>
 
-    <!-- TANDA TANGAN -->
     <div class="ttd-grid">
       <div>
         Mengetahui,<br>
@@ -1666,7 +1660,7 @@ th { border-color: inherit !important; }
 </div>
 
 <script>
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwho8dUZEAquVOXx81BQUj37f_BY918P_SiQ0C6BMIuVCJgCKLVb2hn9df1znKATPcu/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmwJo9uoSEZY5DOPMC_rKkhhMWaMrzHwIW5zrXMHSuZHHy3l7-Ycr09l3G8IsaImjB/exec";
 
 let syncTimeout = null;
 let cloudLoading = false;
