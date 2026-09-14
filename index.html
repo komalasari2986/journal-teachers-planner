@@ -22,6 +22,7 @@ body{font-family:'Lexend',sans-serif;background:var(--bg);color:var(--text);min-
 button,input,textarea,select{font-family:inherit}
 .app{display:flex;min-height:100vh}
 
+/* SIDEBAR & TOGGLE STYLES */
 .sidebar{
   width:270px;
   background:var(--card);
@@ -34,7 +35,9 @@ button,input,textarea,select{font-family:inherit}
   inset:0 auto 0 0;
   z-index:50;
   overflow-y:auto;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 .brand{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:4px 8px 25px}
 .brand-left{display:flex;align-items:center;gap:10px}
 .brand-logo{
@@ -69,7 +72,47 @@ button,input,textarea,select{font-family:inherit}
 
 .mobile-action-group{display:none}
 
-.main{margin-left:270px;flex:1;padding:28px 38px;max-width:1500px;width:100%}
+/* MAIN AREA & SIDEBAR CLOSED LAYOUT */
+.main{
+  margin-left:270px;
+  flex:1;
+  padding:28px 38px;
+  max-width:1500px;
+  width:100%;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.app.sidebar-closed .sidebar {
+  transform: translateX(-100%);
+}
+
+.app.sidebar-closed .main {
+  margin-left: 0 !important;
+  max-width: 100% !important;
+}
+
+/* TOMBOL HAMBURGER TOGGLE DESKTOP/MOBILE */
+.btn-toggle-sidebar {
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--green);
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+.btn-toggle-sidebar:hover {
+  background: #05966915;
+  border-color: var(--green);
+  transform: scale(1.05);
+}
+
 .topbar{display:flex;justify-content:space-between;align-items:center;gap:20px;padding-bottom:20px;border-bottom:1px solid var(--border);margin-bottom:28px}
 .topbar-right{display:flex;align-items:center;gap:12px}
 .eyebrow{font-size:10px;color:var(--green);font-weight:800;text-transform:uppercase;letter-spacing:2px}
@@ -217,8 +260,83 @@ tr:hover td{background:#0596690a}
 .mobile-menu{display:none}
 footer{color:var(--sub);font-size:10px;text-align:center;padding:24px 0}
 
-.absensi-table input.day-cell{width:26px;text-align:center;background:var(--input);border:1px solid var(--border);border-radius:4px;color:var(--text);padding:3px 0;font-size:10px;font-weight:700}
-.rekap-table td, .rekap-table th{text-align:center;font-size:10px}
+/* STICKY TABEL ABSENSI */
+.absensi-table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  min-width: 1200px;
+}
+.absensi-table th, 
+.absensi-table td {
+  border-right: 1px solid var(--border) !important;
+  border-bottom: 1px solid var(--border) !important;
+  background-clip: padding-box;
+}
+.absensi-table input.day-cell {
+  width: 26px;
+  text-align: center;
+  background: var(--input);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  padding: 3px 0;
+  font-size: 10px;
+  font-weight: 700;
+}
+.rekap-table td, .rekap-table th { text-align: center; font-size: 10px; }
+
+/* CSS UNTUK HARI LIBUR SABTU & MINGGU */
+th.is-weekend, td.is-weekend {
+  background-color: #fee2e2 !important;
+  color: #991b1b !important;
+}
+input.day-cell:disabled {
+  background-color: #fecdd3 !important;
+  border-color: #fca5a5 !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Sticky Header Top untuk Tanggal */
+.absensi-table th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--header) !important;
+}
+
+/* Frozen Kolom 1 (NO) */
+.absensi-table th.col-sticky-1,
+.absensi-table td.col-sticky-1 {
+  position: sticky !important;
+  left: 0 !important;
+  width: 45px !important;
+  min-width: 45px !important;
+  max-width: 45px !important;
+  background: #ffffff !important;
+  z-index: 20 !important;
+}
+
+/* Frozen Kolom 2 (NAMA SISWA) */
+.absensi-table th.col-sticky-2,
+.absensi-table td.col-sticky-2 {
+  position: sticky !important;
+  left: 45px !important;
+  min-width: 200px !important;
+  background: #ffffff !important;
+  z-index: 20 !important;
+  border-right: 2px solid var(--border) !important;
+}
+
+.absensi-table thead th.col-sticky-1,
+.absensi-table thead th.col-sticky-2 {
+  z-index: 30 !important;
+  background: var(--header) !important;
+}
+
+.absensi-table tr:hover td {
+  background-color: #f1f5f9 !important;
+}
 
 .dpl-table input{width:45px;text-align:center;background:var(--input);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:4px;font-size:11px}
 .anekdot-table input,.anekdot-table textarea{width:100%;background:transparent;border:0;outline:none;color:var(--text);font-size:11px;padding:4px}
@@ -458,10 +576,13 @@ table { border-collapse: collapse !important; border: 1px solid #cbd5e1 !importa
 th, td { border: 1px solid #cbd5e1 !important; }
 th { border-color: inherit !important; }
 
+/* =========================================================
+   PENGATURAN CETAK PRESISI KERTAS F4 (FOLIO 215mm x 330mm)
+========================================================= */
 @media print {
   @page {
-    size: A4 portrait;
-    margin: 4mm 4mm 2mm 4mm;
+    size: 215mm 330mm portrait; /* KUNCI KETAT UKURAN KERTAS F4 / FOLIO */
+    margin: 5mm 5mm 3mm 5mm;
   }
 
   * {
@@ -476,7 +597,7 @@ th { border-color: inherit !important; }
     margin: 0 !important;
     padding: 0 !important;
     width: 100% !important;
-    font-size: 7.5pt !important;
+    font-size: 8pt !important;
     line-height: 1.15 !important;
   }
 
@@ -488,6 +609,7 @@ th { border-color: inherit !important; }
   .section-head, 
   .mobile-action-group, 
   .clock,
+  .btn-toggle-sidebar,
   #loginScreen {
     display: none !important;
   }
@@ -506,7 +628,7 @@ th { border-color: inherit !important; }
   }
 
   .print-report-container {
-    padding: 2px 0 0 0 !important;
+    padding: 0 !important;
     border: none !important;
     background: #ffffff !important;
     width: 100% !important;
@@ -517,9 +639,9 @@ th { border-color: inherit !important; }
     resize: none !important;
     padding: 0 !important;
     background: transparent !important;
-    min-height: 14px !important;
-    font-size: 7.5pt !important;
-    height: 14px !important;
+    min-height: 18px !important;
+    font-size: 8pt !important;
+    height: 18px !important;
   }
 
   .print-report-container h2,
@@ -528,31 +650,31 @@ th { border-color: inherit !important; }
   }
 
   .print-section-title {
-    font-size: 8pt !important;
-    margin-bottom: 1px !important;
+    font-size: 8.5pt !important;
+    margin-bottom: 2px !important;
     padding-bottom: 1px !important;
     color: #000000 !important;
     border-bottom: 1.5px solid #000000 !important;
   }
 
   .print-grid {
-    gap: 3px !important;
-    margin-bottom: 2px !important;
+    gap: 4px !important;
+    margin-bottom: 3px !important;
   }
 
   .print-box {
-    padding: 2px 4px !important;
+    padding: 3px 5px !important;
     border: 1px solid #64748b !important;
     background: #ffffff !important;
   }
 
   .bar-row {
-    margin: 0px 0 !important;
+    margin: 1px 0 !important;
   }
 
   .bar-label {
-    font-size: 7.5pt !important;
-    margin-bottom: 0px !important;
+    font-size: 8pt !important;
+    margin-bottom: 1px !important;
     color: #000000 !important;
   }
   
@@ -566,7 +688,7 @@ th { border-color: inherit !important; }
   }
   
   .bar-track {
-    height: 4px !important;
+    height: 4.5px !important;
     background-color: #e2e8f0 !important;
     border: 0.5px solid #cbd5e1 !important;
     -webkit-print-color-adjust: exact !important;
@@ -582,22 +704,21 @@ th { border-color: inherit !important; }
   }
 
   .ttd-grid {
-    margin-top: 6px !important;
-    font-size: 7.5pt !important;
+    margin-top: 8px !important;
+    font-size: 8pt !important;
     gap: 10px !important;
     color: #000000 !important;
   }
 
   .ttd-space {
-    height: 45px !important;
+    height: 48px !important;
   }
 
   .print-logo {
-    width: 95px !important;
-    height: 95px !important;
-    max-height: 100px !important;
-    margin: 2px auto 2px !important;
-    padding-top: 2px !important;
+    width: 90px !important;
+    height: 90px !important;
+    max-height: 95px !important;
+    margin: 0 auto 2px !important;
     display: block !important;
     object-fit: contain !important;
   }
@@ -712,7 +833,7 @@ th { border-color: inherit !important; }
   </div>
 </div>
 
-<div class="app">
+<div class="app" id="appLayout">
 
 <!-- SIDEBAR HEADER MOBILE / DESKTOP -->
 <aside class="sidebar" id="sidebar">
@@ -760,10 +881,17 @@ th { border-color: inherit !important; }
 
 <main class="main">
 <header class="topbar">
-  <div>
-    <div class="eyebrow">MY JOB REPORT</div>
-    <h1 id="pageTitle">Journal Teachers Planner</h1>
-    <div class="subtitle" id="pageSubtitle">Tahun Ajaran <span class="dynamic-ta">--</span> — SD Islam Ramah Anak</div>
+  <div style="display:flex; align-items:center; gap:12px;">
+    <!-- TOMBOL HAMBURGER GARIS 3 -->
+    <button class="btn-toggle-sidebar" onclick="toggleSidebarToggle()" title="Sembunyikan / Tampilkan Bar Samping Left">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <div>
+      <div class="eyebrow">MY JOB REPORT</div>
+      <h1 id="pageTitle">Journal Teachers Planner</h1>
+      <div class="subtitle" id="pageSubtitle">Tahun Ajaran <span class="dynamic-ta">--</span> — SD Islam Ramah Anak</div>
+    </div>
   </div>
   
   <div class="topbar-right">
@@ -854,10 +982,25 @@ th { border-color: inherit !important; }
   <div id="pasteBoxContainer" class="card" style="display:none; background:#fffbe8; border:1px solid #fde68a;">
     <div class="card-title" style="color:var(--amber)"><i class="fa-solid fa-clipboard"></i> Tempel (Paste) Data Siswa dari Excel</div>
     <div class="card-sub" style="margin-bottom:10px">
-      Blok kolom data siswa di Excel (bisa 1 kolom Nama saja, atau sekaligus beberapa kolom: Nama, NISN, Jenis Kelamin, dll), tekan <b>Ctrl + C</b>, lalu tempelkan (<b>Ctrl + V</b>) pada kotak di bawah ini dan klik <b>Proses Tempel Data</b>.
+      Pilih kolom mana yang ingin diisi pada dropdown, atau pilih <b>"Semua Kolom (Berurutan)"</b> jika menyalin seluruh kolom data siswa sekaligus dari Excel.
     </div>
+
+    <div class="field" style="margin-bottom:12px;">
+      <label>Pilih Kolom Tujuan Paste:</label>
+      <select id="pasteStudentTarget" style="background:#fff;">
+        <option value="ALL">Semua Kolom (Berurutan: Nama, NISN, L/P, Tempat Tgl Lahir, Orang Tua, Pekerjaan, No Telp)</option>
+        <option value="name">Hanya Nama Siswa</option>
+        <option value="nisn">Hanya NISN</option>
+        <option value="gender">Hanya Jenis Kelamin (L/P)</option>
+        <option value="birth">Hanya Tempat, Tgl Lahir</option>
+        <option value="parent">Hanya Nama Orang Tua</option>
+        <option value="job">Hanya Pekerjaan Ortu</option>
+        <option value="phone">Hanya No. Telp Orang Tua</option>
+      </select>
+    </div>
+
     <div class="field">
-      <textarea id="pasteInputText" placeholder="Tempelkan baris/kolom dari Excel di sini..." style="height:120px; background:#fff;"></textarea>
+      <textarea id="pasteInputText" placeholder="Tempelkan baris/kolom data dari Excel di sini..." style="height:120px; background:#fff;"></textarea>
     </div>
     <div style="margin-top:10px; display:flex; gap:8px;">
       <button class="btn" onclick="processPastedNames()"><i class="fa-solid fa-check"></i> Proses Tempel Data</button>
@@ -918,14 +1061,17 @@ th { border-color: inherit !important; }
       </div>
     </div>
     <div class="card-title" style="margin-bottom:6px">Daftar Hadir Bulanan - <span id="currentMonthLabel" style="color:var(--green)">Agustus</span></div>
-    <div class="card-sub" style="margin-bottom:12px">Isi kode <b>H / . / 1</b> (Hadir), <b>S</b> (Sakit), <b>I</b> (Izin), atau <b>A</b> (Alpha). Kolom <b>Hadir</b>, <b>Izin</b>, <b>Sakit</b>, <b>Alpha</b> &amp; <b>% Kehadiran</b> terhitung otomatis!</div>
+    <div class="card-sub" style="margin-bottom:12px">
+      Isi kode <b>H / . / 1</b> (Hadir), <b>S</b> (Sakit), <b>I</b> (Izin), atau <b>A</b> (Alpha). 
+      Kolom berwarna <span style="background:#fee2e2; color:#991b1b; padding:2px 6px; border-radius:4px; font-weight:bold;">merah muda</span> adalah hari <b>Sabtu &amp; Minggu (Libur)</b> dan tidak dapat diisi.
+    </div>
     <div class="table-wrap">
       <table class="absensi-table">
         <thead>
-          <tr>
-            <th rowspan="2" style="width:30px">NO.</th>
-            <th rowspan="2" style="min-width:220px">NAMA SISWA</th>
-            <th colspan="31" style="text-align:center">TANGGAL</th>
+          <tr id="absensiHeaderRow1">
+            <th rowspan="2" class="col-sticky-1" style="text-align:center">NO.</th>
+            <th rowspan="2" class="col-sticky-2" style="text-align:left; padding-left:10px;">NAMA SISWA</th>
+            <th id="tanggalHeaderGroup" colspan="31" style="text-align:center">TANGGAL</th>
             <th rowspan="2" style="width:45px;text-align:center">Izin</th>
             <th rowspan="2" style="width:45px;text-align:center">Sakit</th>
             <th rowspan="2" style="width:45px;text-align:center">Alpha</th>
@@ -1085,9 +1231,18 @@ th { border-color: inherit !important; }
 
   <div class="card">
     <div class="card-title" style="margin-bottom:6px">1. Capaian 8 DPL (Dimensi Profil Lulusan)</div>
-    <div class="card-sub" style="margin-bottom:12px; color:var(--green)">
-      <i class="fa-solid fa-circle-info"></i> Pilih tanggal pekan di bawah ini. Tabel &amp; Diagram akan otomatis berganti sesuai pekan yang dipilih!
+    
+    <div style="background:#f0fdf4; border:1px solid #bbf7d0; padding:14px; margin-bottom:15px; border-radius:12px;">
+      <div style="font-weight:800; color:var(--green); font-size:12px; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+        <i class="fa-solid fa-circle-info" style="font-size:15px;"></i> PETUNJUK PENGISIAN UNTUK BAPAK/IBU GURU:
+      </div>
+      <ul style="font-size:11px; color:#166534; padding-left:20px; line-height:1.6;">
+        <li><b>Pilih Tanggal Pekan:</b> Tentukan rentang pekan pada kotak tanggal di bawah. Data tabel &amp; diagram akan berganti otomatis per pekan.</li>
+        <li><b>Cara Mengisi Kolom:</b> Isikan angka <b>1</b> pada kolom aspek DPL yang dilaksanakan atau dicapai oleh peserta didik pada hari tersebut.</li>
+        <li><b>Kalkulasi Otomatis:</b> Grafik alokasi dan total persentase akan dihitung otomatis oleh sistem berdasarkan input angka Anda.</li>
+      </ul>
     </div>
+
     <div class="form-grid" style="grid-template-columns:1fr; margin-bottom:15px;">
       <div class="field">
         <label>Tanggal / Rentang Pekan DPL</label>
@@ -1155,20 +1310,34 @@ th { border-color: inherit !important; }
       <div class="card-sub">Daftar Nilai Formatif Peserta Didik per Pekan</div>
     </div>
     <div class="actions">
-      <!-- TOMBOL PASTE NILAI -->
       <button class="btn amber" onclick="togglePasteNilaiBox()"><i class="fa-solid fa-paste"></i> Paste Nilai dari Excel</button>
       <span class="badge success"><i class="fa-solid fa-floppy-disk"></i> Auto Save</span>
     </div>
   </div>
 
-  <!-- KOTAK PASTE DATA NILAI EXCEL -->
   <div id="pasteNilaiBoxContainer" class="card" style="display:none; background:#fffbe8; border:1px solid #fde68a;">
     <div class="card-title" style="color:var(--amber)"><i class="fa-solid fa-clipboard"></i> Tempel (Paste) Data Nilai dari Excel</div>
     <div class="card-sub" style="margin-bottom:10px">
-      Blok/Copy baris nilai dari Excel sesuai urutan mapel: <br>
-      <b>[PAI | B.INA | MTK | IPAS | SENI | PJOK | B.ING | SUNDA | ARAB | TIK]</b><br>
-      Tekan <b>Ctrl + C</b> di Excel, tempelkan (<b>Ctrl + V</b>) pada kotak di bawah ini, lalu klik <b>Proses Tempel Nilai</b>.
+      Pilih Mata Pelajaran tujuan untuk nilai yang akan ditempelkan, atau biarkan <b>"Semua Mapel (Berurutan)"</b> jika menyalin seluruh kolom mapel dari Excel.
     </div>
+    
+    <div class="field" style="margin-bottom:10px;">
+      <label>Pilih Mapel Tujuan Paste:</label>
+      <select id="pasteMapelTarget" style="background:#fff;">
+        <option value="ALL">Semua Mapel (Berurutan: PAI, B.INA, MTK, IPAS, SENI, PJOK, B.ING, SUNDA, ARAB, TIK)</option>
+        <option value="pai">PAI</option>
+        <option value="bina">Bahasa Indonesia</option>
+        <option value="mtk">Matematika</option>
+        <option value="ipas">IPAS</option>
+        <option value="seni">Seni</option>
+        <option value="pjok">PJOK</option>
+        <option value="bing">Bahasa Inggris</option>
+        <option value="sunda">Bahasa Sunda</option>
+        <option value="arab">Bahasa Arab</option>
+        <option value="tik">TIK</option>
+      </select>
+    </div>
+
     <div class="field">
       <textarea id="pasteNilaiInputText" placeholder="Tempelkan baris/kolom nilai dari Excel di sini..." style="height:120px; background:#fff;"></textarea>
     </div>
@@ -1179,7 +1348,7 @@ th { border-color: inherit !important; }
   </div>
 
   <div class="card">
-    <div class="form-grid" style="margin-bottom:15px;">
+    <div class="form-grid" style="margin-bottom:15px; grid-template-columns: repeat(3, 1fr);">
       <div class="field">
         <label>Tanggal / Rentang Pekan Pelaksanaan</label>
         <div class="date-range-box">
@@ -1188,10 +1357,17 @@ th { border-color: inherit !important; }
           <input type="date" data-save="nilai_tgl_selesai" onchange="renderNilai()">
         </div>
       </div>
-      <div class="field"><label>Kelas / Semester</label><input type="text" data-save="nilai_kelas" placeholder="Isi Kelas / Semester..."></div>
+      <div class="field">
+        <label>Kelas / Level</label>
+        <input type="text" data-save="nilai_kelas" placeholder="Isi Kelas / Level..." oninput="renderNilai()">
+      </div>
+      <div class="field">
+        <label>KKM Level Ini</label>
+        <input type="number" id="kkmInput" data-save="nilai_kkm" value="75" placeholder="70 / 75 / 80" oninput="saveKKM(this.value)">
+      </div>
     </div>
     <div class="card-title" style="margin-bottom:6px">Tabel Nilai Formatif Per Mapel</div>
-    <div class="card-sub" style="margin-bottom:12px">Isi angka nilai (0-100) per mata pelajaran. Nilai di bawah KKM (<b>&lt; 75</b>) otomatis <b>berwarna merah</b> dan jumlah <b>Remedial</b> terhitung otomatis!</div>
+    <div class="card-sub" style="margin-bottom:12px">Isi angka nilai (0-100). Nilai di bawah KKM (<b id="kkmInfoText">&lt; 75</b>) otomatis <b>berwarna merah</b> dan jumlah <b>Remedial</b> terhitung otomatis!</div>
     <div class="table-wrap">
       <table class="nilai-table">
         <thead>
@@ -1378,11 +1554,11 @@ th { border-color: inherit !important; }
   </div>
 </section>
 
-<!-- RINGKASAN LAPORAN PLANNER & CETAK LAPORAN -->
+<!-- RINGKASAN LAPORAN PLANNER & CETAK LAPORAN (F4 PRESISI) -->
 <section id="print_view" class="page">
   <div class="section-head" style="margin-bottom:8px;">
     <div></div>
-    <button class="btn" onclick="window.print()"><i class="fa-solid fa-print"></i> Cetak Laporan Ini</button>
+    <button class="btn" onclick="window.print()"><i class="fa-solid fa-print"></i> Cetak Laporan Ini (Ukuran F4)</button>
   </div>
 
   <div class="print-report-container">
@@ -1524,7 +1700,7 @@ th { border-color: inherit !important; }
 
 <script>
 // URL APPS SCRIPT
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwym691JCfPu5E_1InTAcllnxCyTB1axaBv4BXyBKk-ui8Jahlu-AksJNgekjlUi2Ck/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxdUUUBQLaTwFrPIQtI1agjxl9b43Tg_D7GWrcuIrDrT1xEAx4BM2cSVP-Ew0_bej-t/exec";
 
 let syncTimeout = null;
 let cloudLoading = false;
@@ -1532,6 +1708,18 @@ let cloudLoading = false;
 let activeUserKey = localStorage.getItem("jtp_account_user_key") || "";
 let activeUsername = localStorage.getItem("jtp_account_username") || "";
 let activeTA = localStorage.getItem("jtp_active_ta") || localStorage.getItem("jtp_auto_ta") || getCalculatedTA();
+
+/* FUNGSI TOGGLE SIDEBAR HAMBURGER DESKTOP & MOBILE */
+function toggleSidebarToggle() {
+  const appLayout = document.getElementById("appLayout");
+  const sidebar = document.getElementById("sidebar");
+
+  if (window.innerWidth <= 760) {
+    sidebar.classList.toggle("open");
+  } else {
+    appLayout.classList.toggle("sidebar-closed");
+  }
+}
 
 function capitalizeInput(el) {
   if (el && el.value) {
@@ -2124,7 +2312,7 @@ function removeLastStudentRow(){
 
 function togglePasteBox() {
   const box = document.getElementById("pasteBoxContainer");
-  if (box.style.display === "none") {
+  if (box.style.display === "none" || !box.style.display) {
     box.style.display = "block";
     document.getElementById("pasteInputText").focus();
   } else {
@@ -2134,6 +2322,8 @@ function togglePasteBox() {
 
 function processPastedNames() {
   const text = document.getElementById("pasteInputText").value;
+  const targetField = document.getElementById("pasteStudentTarget").value;
+
   if (!text.trim()) {
     alert("Silakan tempelkan data terlebih dahulu.");
     return;
@@ -2165,14 +2355,16 @@ function processPastedNames() {
 
       const cols = line.split("\t").map(c => c.trim());
 
-      if (cols.length === 1) {
-        saved[index].name = cols[0];
-      } else {
+      if (targetField === "ALL") {
         cols.forEach((val, colIdx) => {
           if (colIdx < fieldsOrder.length) {
             saved[index][fieldsOrder[colIdx]] = val;
           }
         });
+      } else {
+        if (cols.length > 0) {
+          saved[index][targetField] = cols[0];
+        }
       }
     }
   });
@@ -2183,7 +2375,7 @@ function processPastedNames() {
   document.getElementById("pasteInputText").value = "";
   togglePasteBox();
 
-  alert(`Berhasil mengimpor ${Math.min(lines.length, 24)} baris data siswa ke dalam tabel!`);
+  alert(`Berhasil mengimpor data untuk ${Math.min(lines.length, 24)} siswa!`);
 }
 
 function esc(v){return String(v).replaceAll("&","&amp;").replaceAll('"',"&quot;").replaceAll("<","&lt;").replaceAll(">","&gt;")}
@@ -2195,28 +2387,80 @@ function changeAbsensiMonth(m){
  renderAbsensi();
 }
 
+function getMonthDaysAndYear(monthKey) {
+  const ta = activeTA || getCalculatedTA();
+  const years = ta.split("/");
+  const startYear = parseInt(years[0]) || new Date().getFullYear();
+  const endYear = parseInt(years[1]) || (startYear + 1);
+
+  const monthMap = {
+    "JULI": { mIndex: 6, year: startYear },
+    "AGUST": { mIndex: 7, year: startYear },
+    "SEPT": { mIndex: 8, year: startYear },
+    "OKT": { mIndex: 9, year: startYear },
+    "NOV": { mIndex: 10, year: startYear },
+    "DES": { mIndex: 11, year: startYear },
+    "JAN": { mIndex: 0, year: endYear },
+    "FEB": { mIndex: 1, year: endYear },
+    "MAR": { mIndex: 2, year: endYear },
+    "APR": { mIndex: 3, year: endYear },
+    "MEI": { mIndex: 4, year: endYear },
+    "JUN": { mIndex: 5, year: endYear }
+  };
+
+  const info = monthMap[monthKey] || { mIndex: 7, year: startYear };
+  const daysInMonth = new Date(info.year, info.mIndex + 1, 0).getDate();
+  
+  return {
+    daysCount: daysInMonth,
+    year: info.year,
+    mIndex: info.mIndex
+  };
+}
+
 function renderAbsensi(){
- const headerRow=document.getElementById("absensiDaysHeader");
- headerRow.innerHTML="";
- for(let d=1;d<=31;d++){headerRow.innerHTML+=`<th style="padding:4px;text-align:center">${d}</th>`;}
+ const monthInfo = getMonthDaysAndYear(currentMonth);
+ const totalDays = monthInfo.daysCount;
+
+ const tanggalGroup = document.getElementById("tanggalHeaderGroup");
+ if (tanggalGroup) tanggalGroup.colSpan = totalDays;
+
+ const headerRow = document.getElementById("absensiDaysHeader");
+ headerRow.innerHTML = "";
+
+ for (let d = 1; d <= totalDays; d++) {
+    const dateObj = new Date(monthInfo.year, monthInfo.mIndex, d);
+    const dayOfWeek = dateObj.getDay();
+    const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+
+    headerRow.innerHTML += `<th style="padding:4px;text-align:center" class="${isWeekend ? 'is-weekend' : ''}">${d}</th>`;
+ }
 
  const students = getStudentsData();
- const monthData = JSON.parse(get("absData_"+currentMonth,"{}"));
+ const monthData = JSON.parse(get("absData_" + currentMonth, "{}"));
  const body = document.getElementById("absensiBody");
  body.innerHTML = "";
 
  students.forEach((st, i) => {
     const name = st.name || "";
     const studentAbs = monthData[i] || {};
-    let daysHtml="";
-    for(let d=1;d<=31;d++){
-      const val=studentAbs[d]||"";
-      daysHtml+=`<td><input type="text" class="day-cell" data-s="${i}" data-d="${d}" value="${esc(val)}" maxlength="1"></td>`;
+    let daysHtml = "";
+
+    for (let d = 1; d <= totalDays; d++) {
+      const val = studentAbs[d] || "";
+      const dateObj = new Date(monthInfo.year, monthInfo.mIndex, d);
+      const dayOfWeek = dateObj.getDay();
+      const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+
+      daysHtml += `<td class="${isWeekend ? 'is-weekend' : ''}">
+        <input type="text" class="day-cell" data-s="${i}" data-d="${d}" value="${isWeekend ? '' : esc(val)}" maxlength="1" ${isWeekend ? 'disabled' : ''}>
+      </td>`;
     }
-    const tr=document.createElement("tr");
-    tr.id=`absRow_${i}`;
-    tr.innerHTML=`<td style="text-align:center">${i+1}</td>
-      <td style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><b>${esc(name)}</b></td>
+
+    const tr = document.createElement("tr");
+    tr.id = `absRow_${i}`;
+    tr.innerHTML = `<td class="col-sticky-1" style="text-align:center">${i+1}</td>
+      <td class="col-sticky-2" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><b>${esc(name)}</b></td>
       ${daysHtml}
       <td style="text-align:center" id="stat_i_${i}">0</td>
       <td style="text-align:center" id="stat_s_${i}">0</td>
@@ -2227,13 +2471,13 @@ function renderAbsensi(){
     calcStudentAbsensi(i);
  });
 
- document.querySelectorAll(".day-cell").forEach(input=>{
-    input.addEventListener("input",e=>{
-      const s=e.target.dataset.s;
-      const d=e.target.dataset.d;
-      const val=e.target.value.toUpperCase();
-      e.target.value=val;
-      saveAbsensiVal(s,d,val);
+ document.querySelectorAll(".day-cell:not(:disabled)").forEach(input => {
+    input.addEventListener("input", e => {
+      const s = e.target.dataset.s;
+      const d = e.target.dataset.d;
+      const val = e.target.value.toUpperCase();
+      e.target.value = val;
+      saveAbsensiVal(s, d, val);
       calcStudentAbsensi(s);
       renderRekap();
     });
@@ -2536,12 +2780,30 @@ function getNilaiStorageKey(){
   return `nilaiData_${start}_${end}`;
 }
 
+function getKKM() {
+  const saved = get("nilai_kkm", "75");
+  const num = parseFloat(saved);
+  return isNaN(num) ? 75 : num;
+}
+
+function saveKKM(val) {
+  set("nilai_kkm", val);
+  renderNilai();
+}
+
 function renderNilai(){
+ const kkm = getKKM();
  const key = getNilaiStorageKey();
  const students = getStudentsData();
  const saved = JSON.parse(get(key, JSON.stringify(defaultNilaiData)));
  const body = document.getElementById("nilaiBody");
  body.innerHTML = "";
+
+ const kkmEl = document.getElementById("kkmInput");
+ if(kkmEl && !kkmEl.value) kkmEl.value = kkm;
+
+ const kkmInfoText = document.getElementById("kkmInfoText");
+ if(kkmInfoText) kkmInfoText.textContent = `< ${kkm}`;
 
  students.forEach((st, i) => {
     const name = st.name || "";
@@ -2554,7 +2816,7 @@ function renderNilai(){
     mapelKeys.forEach(mKey => {
       const val = sNilai[mKey] || "";
       const valNum = parseVal(val);
-      const isUnderKKM = valNum !== null && valNum < 75;
+      const isUnderKKM = valNum !== null && valNum < kkm;
 
       if(isUnderKKM) remedCount++;
 
@@ -2588,6 +2850,8 @@ function togglePasteNilaiBox() {
 
 function processPastedNilai() {
   const text = document.getElementById("pasteNilaiInputText").value;
+  const targetMapel = document.getElementById("pasteMapelTarget").value;
+
   if (!text.trim()) {
     alert("Silakan tempelkan data nilai terlebih dahulu.");
     return;
@@ -2614,12 +2878,17 @@ function processPastedNilai() {
     if (index < students.length) {
       const cols = line.split("\t").map(c => c.trim());
 
-      cols.forEach((val, colIdx) => {
-        if (colIdx < mapelsOrder.length) {
-          const mapelKey = mapelsOrder[colIdx];
-          saved[index][mapelKey] = val;
+      if (targetMapel === "ALL") {
+        cols.forEach((val, colIdx) => {
+          if (colIdx < mapelsOrder.length) {
+            saved[index][mapelsOrder[colIdx]] = val;
+          }
+        });
+      } else {
+        if (cols.length > 0) {
+          saved[index][targetMapel] = cols[0];
         }
-      });
+      }
     }
   });
 
@@ -2677,32 +2946,33 @@ function calcNilaiStats(){
 }
 
 function saveNilai(){
+ const kkm = getKKM();
  const arr = [];
  document.querySelectorAll("#nilaiBody tr").forEach((tr, i) => {
-   const item = {};
-   let remedCount = 0;
+    const item = {};
+    let remedCount = 0;
 
-   tr.querySelectorAll("input.nilai-cell").forEach(x => {
-     const mKey = x.dataset.m;
-     const val = String(x.value);
-     item[mKey] = val;
+    tr.querySelectorAll("input.nilai-cell").forEach(x => {
+      const mKey = x.dataset.m;
+      const val = String(x.value);
+      item[mKey] = val;
 
-     const valNum = parseVal(val);
-     const isUnderKKM = valNum !== null && valNum < 75;
+      const valNum = parseVal(val);
+      const isUnderKKM = valNum !== null && valNum < kkm;
 
-     if (isUnderKKM) {
-       remedCount++;
-       x.classList.add("under-kkm");
-     } else {
-       x.classList.remove("under-kkm");
-     }
-   });
+      if (isUnderKKM) {
+        remedCount++;
+        x.classList.add("under-kkm");
+      } else {
+        x.classList.remove("under-kkm");
+      }
+    });
 
-   item.remed = String(remedCount);
-   const remedInput = document.getElementById(`remed_count_${i}`);
-   if(remedInput) remedInput.value = remedCount;
+    item.remed = String(remedCount);
+    const remedInput = document.getElementById(`remed_count_${i}`);
+    if(remedInput) remedInput.value = remedCount;
 
-   arr[i] = item;
+    arr[i] = item;
  });
 
  const key = getNilaiStorageKey();
