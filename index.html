@@ -551,6 +551,24 @@ th { border-color: inherit !important; }
   .print-note-text { display:block !important; white-space:pre-wrap !important; overflow-wrap:anywhere !important; word-break:break-word !important; font-size:9pt !important; line-height:1.35 !important; margin-top:3px !important; }
   .ttd-grid { margin-top:16px !important; break-inside:avoid !important; page-break-inside:avoid !important; }
   .ttd-space { height:55px !important; }
+  /* Penuhi lembar 1 A4 saat catatan masih kosong, tetapi tetap fleksibel jika catatan memanjang. */
+  .print-page-1 {
+    min-height: 277mm !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .print-page-1 > .print-grid {
+    align-items: stretch !important;
+    flex: 1 1 auto !important;
+  }
+  .print-page-1 > .print-grid .print-box {
+    min-height: 58mm !important;
+    height: 100% !important;
+  }
+  .print-page-1 > .print-section-title {
+    flex: 0 0 auto !important;
+  }
+
   .print-logo { width:105px !important; height:105px !important; margin-bottom:5px !important; }
   #printActivityChart,#printDplChart,#printNilaiChart { break-inside:avoid !important; page-break-inside:avoid !important; }
 }
@@ -1437,7 +1455,7 @@ th { border-color: inherit !important; }
   </div>
 </section>
 
-<!-- RINGKASAN LAPORAN PLANNER (FORMAT 2 LEMBAR F4 PENUH OTOMATIS) -->
+<!-- RINGKASAN LAPORAN PLANNER (FORMAT A4 OTOMATIS) -->
 <section id="print_view" class="page">
   <div class="section-head" style="margin-bottom:12px;">
     <div class="actions">
@@ -1451,7 +1469,7 @@ th { border-color: inherit !important; }
 
   <div class="print-report-container" id="printableWordContent">
     
-    <!-- HALAMAN 1 F4 -->
+    <!-- HALAMAN 1 A4 -->
     <div class="print-page-1">
       <div style="text-align:center; border-bottom:2px solid var(--text); padding-bottom:4px; margin-bottom:10px;">
         <img class="print-logo school-logo" src="assets/logo-sekolah.jpg" alt="Logo SD Islam Ramah Anak">
@@ -1511,7 +1529,7 @@ th { border-color: inherit !important; }
       </div>
     </div>
 
-    <!-- HALAMAN 2 F4 -->
+    <!-- HALAMAN 2 A4 -->
     <div class="print-page-break">
       <div class="print-section-title" style="margin-top:0;">IV. Capaian 8 DPL Peserta Didik</div>
       <div class="print-grid">
@@ -1587,7 +1605,7 @@ th { border-color: inherit !important; }
 </div>
 
 <script>
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyT3aHG_EKHQOnNFurqyZGlGXLdA5eyNbM7guzrAy2Ja1ulFuleEaoC69sD_LG2WbmE/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw3cchJSZoNeZX3yE_Q0gqjxa3y5PAbvBvRw78Mj8L4UMi7lZqhn58EH3tZSR9Nx9SW/exec";
 
 let syncTimeout = null;
 let cloudLoading = false;
