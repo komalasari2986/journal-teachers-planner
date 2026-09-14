@@ -22,7 +22,6 @@ body{font-family:'Lexend',sans-serif;background:var(--bg);color:var(--text);min-
 button,input,textarea,select{font-family:inherit}
 .app{display:flex;min-height:100vh}
 
-/* SIDEBAR & TOGGLE STYLES */
 .sidebar{
   width:270px;
   background:var(--card);
@@ -30,7 +29,7 @@ button,input,textarea,select{font-family:inherit}
   padding:22px 16px;
   display:flex;
   flex-direction:column;
-  justify-style:space-between;
+  justify-content:space-between;
   position:fixed;
   inset:0 auto 0 0;
   z-index:50;
@@ -72,7 +71,6 @@ button,input,textarea,select{font-family:inherit}
 
 .mobile-action-group{display:none}
 
-/* MAIN AREA & SIDEBAR CLOSED LAYOUT */
 .main{
   margin-left:270px;
   flex:1;
@@ -91,7 +89,6 @@ button,input,textarea,select{font-family:inherit}
   max-width: 100% !important;
 }
 
-/* TOMBOL HAMBURGER TOGGLE DESKTOP/MOBILE */
 .btn-toggle-sidebar {
   border: 1px solid var(--border);
   background: var(--card);
@@ -237,7 +234,16 @@ h1{font-size:27px;line-height:1.2;margin-top:5px;color:var(--text)}
 .btn{border:0;border-radius:10px;padding:10px 14px;background:#059669;color:white;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:.2s}.btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
 .btn.secondary{background:var(--input);color:var(--text);border:1px solid var(--border)}.btn.danger{background:#e11d48;color:white}.btn.amber{background:#d97706;color:white}
 .actions{display:flex;gap:8px;flex-wrap:wrap}
-.table-wrap{overflow:auto;border:1px solid var(--border);border-radius:13px}
+
+/* CONTAINER TABEL SCROLLING FIX */
+.table-wrap {
+  overflow-x: auto !important;
+  overflow-y: visible;
+  max-width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  position: relative;
+}
 table{width:100%;border-collapse:collapse;min-width:850px}
 th,td{padding:11px 12px;border-bottom:1px solid var(--border);text-align:left;font-size:11px;color:var(--text)}
 th{background:var(--header);font-size:9px;text-transform:uppercase;letter-spacing:.7px;position:sticky;top:0;z-index:2;color:var(--sub)}
@@ -260,11 +266,12 @@ tr:hover td{background:#0596690a}
 .mobile-menu{display:none}
 footer{color:var(--sub);font-size:10px;text-align:center;padding:24px 0}
 
-/* STICKY TABEL ABSENSI */
+/* STICKY TABEL ABSENSI (FREEZE COLUMN FIX) */
 .absensi-table {
   border-collapse: separate !important;
   border-spacing: 0 !important;
-  min-width: 1200px;
+  min-width: 1250px;
+  width: max-content;
 }
 .absensi-table th, 
 .absensi-table td {
@@ -273,19 +280,27 @@ footer{color:var(--sub);font-size:10px;text-align:center;padding:24px 0}
   background-clip: padding-box;
 }
 .absensi-table input.day-cell {
-  width: 26px;
+  width: 28px;
   text-align: center;
   background: var(--input);
   border: 1px solid var(--border);
   border-radius: 4px;
   color: var(--text);
-  padding: 3px 0;
-  font-size: 10px;
+  padding: 4px 0;
+  font-size: 10.5px;
   font-weight: 700;
+  transition: all 0.15s ease;
 }
+
+/* WARNA STATUS INPUT ABSENSI */
+input.day-cell.filled-h { background-color: #d1fae5 !important; color: #047857 !important; border-color: #10b981 !important; }
+input.day-cell.filled-s { background-color: #fef3c7 !important; color: #b45309 !important; border-color: #f59e0b !important; }
+input.day-cell.filled-i { background-color: #e0f2fe !important; color: #0369a1 !important; border-color: #38bdf8 !important; }
+input.day-cell.filled-a { background-color: #ffe4e6 !important; color: #e11d48 !important; border-color: #f43f5e !important; }
+
 .rekap-table td, .rekap-table th { text-align: center; font-size: 10px; }
 
-/* CSS UNTUK HARI LIBUR SABTU & MINGGU */
+/* HARI LIBUR SABTU & MINGGU */
 th.is-weekend, td.is-weekend {
   background-color: #fee2e2 !important;
   color: #991b1b !important;
@@ -297,32 +312,27 @@ input.day-cell:disabled {
   opacity: 0.6;
 }
 
-/* Sticky Header Top untuk Tanggal */
-.absensi-table th {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: var(--header) !important;
-}
-
-/* Frozen Kolom 1 (NO) */
+/* Frozen / Sticky Kolom 1 (NO) */
 .absensi-table th.col-sticky-1,
 .absensi-table td.col-sticky-1 {
   position: sticky !important;
   left: 0 !important;
-  width: 45px !important;
-  min-width: 45px !important;
-  max-width: 45px !important;
+  width: 50px !important;
+  min-width: 50px !important;
+  max-width: 50px !important;
   background: #ffffff !important;
   z-index: 20 !important;
+  text-align: center;
 }
 
-/* Frozen Kolom 2 (NAMA SISWA) */
+/* Frozen / Sticky Kolom 2 (NAMA SISWA) */
 .absensi-table th.col-sticky-2,
 .absensi-table td.col-sticky-2 {
   position: sticky !important;
-  left: 45px !important;
-  min-width: 200px !important;
+  left: 50px !important;
+  width: 210px !important;
+  min-width: 210px !important;
+  max-width: 210px !important;
   background: #ffffff !important;
   z-index: 20 !important;
   border-right: 2px solid var(--border) !important;
@@ -334,8 +344,53 @@ input.day-cell:disabled {
   background: var(--header) !important;
 }
 
-.absensi-table tr:hover td {
+.absensi-table tr:hover td.col-sticky-1,
+.absensi-table tr:hover td.col-sticky-2 {
   background-color: #f1f5f9 !important;
+}
+
+.no-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 10px;
+}
+.no-badge.done {
+  background-color: #059669;
+  color: white;
+  box-shadow: 0 2px 5px rgba(5,150,105,0.3);
+}
+
+/* GRID SELEKSI SISWA CEPAT ABSENSI */
+.student-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+  max-height: 250px;
+  overflow-y: auto;
+  padding: 8px;
+  background: var(--input);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.student-picker-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-size: 11px;
+  cursor: pointer;
+  user-select: none;
+}
+.student-picker-item input {
+  cursor: pointer;
 }
 
 .dpl-table input{width:45px;text-align:center;background:var(--input);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:4px;font-size:11px}
@@ -576,12 +631,10 @@ table { border-collapse: collapse !important; border: 1px solid #cbd5e1 !importa
 th, td { border: 1px solid #cbd5e1 !important; }
 th { border-color: inherit !important; }
 
-/* =========================================================
-   PENGATURAN CETAK PRESISI KERTAS F4 (FOLIO 215mm x 330mm)
-========================================================= */
+/* PRINT F4 */
 @media print {
   @page {
-    size: 215mm 330mm portrait; /* KUNCI KETAT UKURAN KERTAS F4 / FOLIO */
+    size: 215mm 330mm portrait;
     margin: 5mm 5mm 3mm 5mm;
   }
 
@@ -727,7 +780,7 @@ th { border-color: inherit !important; }
 </head>
 <body>
 
-<!-- OVERLAY AUTH (LOGIN, DAFTAR, & RESET PASSWORD) -->
+<!-- OVERLAY AUTH -->
 <div id="loginScreen" style="position:fixed; inset:0; z-index:9999; background:linear-gradient(135deg,#047857,#0f172a); display:flex; align-items:center; justify-content:center; padding:20px; overflow-y:auto;">
   <div style="background:#fff; border-radius:16px; width:100%; max-width:420px; padding:25px; box-shadow:0 10px 25px rgba(0,0,0,0.2); margin:auto;">
     
@@ -804,7 +857,7 @@ th { border-color: inherit !important; }
       </form>
     </div>
 
-    <!-- FORM RESET / LUPA PASSWORD -->
+    <!-- FORM RESET PASSWORD -->
     <div id="authResetPassForm" style="display:none;">
       <div style="text-align:center; margin-bottom:18px;">
         <h2 style="font-size:16px; color:#0f172a; font-weight:800;">Reset Password</h2>
@@ -835,7 +888,7 @@ th { border-color: inherit !important; }
 
 <div class="app" id="appLayout">
 
-<!-- SIDEBAR HEADER MOBILE / DESKTOP -->
+<!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
   <div>
     <div class="brand">
@@ -882,7 +935,6 @@ th { border-color: inherit !important; }
 <main class="main">
 <header class="topbar">
   <div style="display:flex; align-items:center; gap:12px;">
-    <!-- TOMBOL HAMBURGER GARIS 3 -->
     <button class="btn-toggle-sidebar" onclick="toggleSidebarToggle()" title="Sembunyikan / Tampilkan Bar Samping Left">
       <i class="fa-solid fa-bars"></i>
     </button>
@@ -1029,18 +1081,50 @@ th { border-color: inherit !important; }
   </div>
 </section>
 
-<!-- ABSENSI -->
+<!-- ABSENSI PEGAWAI / SISWA -->
 <section id="absensi" class="page">
   <div class="section-head">
     <div>
       <div class="section-title"><i class="fa-solid fa-clipboard-user"></i> Absensi Peserta Didik</div>
       <div class="card-sub">Daftar Hadir Peserta Didik SD Islam Ramah Anak TA. <span class="dynamic-ta">--</span></div>
     </div>
-    <span class="badge success"><i class="fa-solid fa-floppy-disk"></i> Auto Save</span>
+    <div class="actions">
+      <button class="btn" onclick="toggleQuickAbsenceBox()"><i class="fa-solid fa-bolt"></i> Absensi Cepat (Auto-Hadir)</button>
+      <span class="badge success"><div style="display:inline-block"><i class="fa-solid fa-floppy-disk"></i> Auto Save</div></span>
+    </div>
+  </div>
+
+  <!-- MODAL / BOX KONTROL ABSENSI CEPAT (Auto-Hadir + Pengecualian Nomor Siswa) -->
+  <div id="quickAbsenceBox" class="card" style="display:none; background:#f0fdf4; border:1.5px solid #86efac;">
+    <div class="card-title" style="color:var(--green); display:flex; align-items:center; gap:8px;">
+      <i class="fa-solid fa-bolt"></i> Fitur Pengisian Absensi Cepat Tanggal <span id="quickBoxDayLabel">1</span>
+    </div>
+    <div class="card-sub" style="margin-bottom:12px">
+      Klik <b>"Set Semua Siswa HADIR"</b> untuk mengisi kode <b>H</b> secara otomatis. Centang nama/nomor siswa yang <b>Sakit, Izin, atau Alpha</b> untuk mengubah statusnya secara instan tanpa mengetik manual.
+    </div>
+
+    <div style="margin-bottom:12px; display:flex; gap:10px; flex-wrap:wrap;">
+      <button class="btn" onclick="applyAutoHadirAll()"><i class="fa-solid fa-user-check"></i> 1. Set Semua Siswa HADIR (H)</button>
+      <button class="btn danger" onclick="clearAbsenceActiveDay()"><i class="fa-solid fa-eraser"></i> Kosongkan Hari Ini</button>
+    </div>
+
+    <div class="field" style="margin-bottom:8px;">
+      <label style="color:#166534"><b>Pilih Siswa yang Pengecualian (Sakit / Izin / Alpha):</b></label>
+    </div>
+
+    <div class="student-picker-grid" id="studentPickerGrid"></div>
+
+    <div style="margin-top:12px; display:flex; gap:8px; align-items:center;">
+      <span style="font-size:11px; font-weight:700; color:var(--sub)">Ubah Status Siswa Tercentang Menjadi:</span>
+      <button class="btn amber" onclick="applyExclusionToSelected('S')">Sakit (S)</button>
+      <button class="btn secondary" style="background:#e0f2fe; color:#0369a1; border-color:#7dd3fc;" onclick="applyExclusionToSelected('I')">Izin (I)</button>
+      <button class="btn danger" onclick="applyExclusionToSelected('A')">Alpha (A)</button>
+      <button class="btn secondary" style="margin-left:auto;" onclick="toggleQuickAbsenceBox()">Tutup Modul</button>
+    </div>
   </div>
   
   <div class="card">
-    <div class="form-grid" style="margin-bottom:15px; grid-template-columns:repeat(2,1fr);">
+    <div class="form-grid" style="margin-bottom:15px; grid-template-columns: repeat(3, 1fr);">
       <div class="field"><label>Guru Kelas</label><input type="text" data-save="abs_guru" placeholder="Nama Guru / Kelas..."></div>
       <div class="field">
         <label>Pilih Bulan Absensi</label>
@@ -1059,12 +1143,31 @@ th { border-color: inherit !important; }
           <option value="JUN">Juni</option>
         </select>
       </div>
+      <div class="field">
+        <label>Pilih Tanggal Pengisian Aktif</label>
+        <select id="absensiActiveDaySelect" onchange="changeAbsensiActiveDay(this.value)">
+        </select>
+      </div>
     </div>
+
+    <!-- TRACKER STATUS ABSENSI -->
+    <div style="background:#f0fdf4; border:1px solid #bbf7d0; padding:12px 16px; border-radius:12px; margin-bottom:15px; display:flex; justify-content:space-between; align-items:center;">
+      <div style="font-size:11.5px; color:#166534;">
+        <i class="fa-solid fa-circle-check" style="color:#059669; font-size:14px; margin-right:5px;"></i>
+        Progress Absensi Tanggal <b id="activeDayProgressText">1</b> <span id="currentMonthProgressLabel">Agustus</span>: 
+        <b id="completedAbsenceCount" style="color:#047857; font-size:13px; margin-left:4px;">0 / 0 Siswa</b>
+      </div>
+      <div id="lastAbsenceDoneBadge" class="badge success" style="font-size:10.5px; padding:6px 12px;">
+        Terakhir Diabsen: <span id="lastAbsenceDoneName" style="font-weight:800; margin-left:3px;">-</span>
+      </div>
+    </div>
+
     <div class="card-title" style="margin-bottom:6px">Daftar Hadir Bulanan - <span id="currentMonthLabel" style="color:var(--green)">Agustus</span></div>
     <div class="card-sub" style="margin-bottom:12px">
       Isi kode <b>H / . / 1</b> (Hadir), <b>S</b> (Sakit), <b>I</b> (Izin), atau <b>A</b> (Alpha). 
-      Kolom berwarna <span style="background:#fee2e2; color:#991b1b; padding:2px 6px; border-radius:4px; font-weight:bold;">merah muda</span> adalah hari <b>Sabtu &amp; Minggu (Libur)</b> dan tidak dapat diisi.
+      Nomor urut bercentang hijau <span class="no-badge done"><i class="fa-solid fa-check"></i></span> menandakan siswa tersebut sudah diabsen.
     </div>
+    
     <div class="table-wrap">
       <table class="absensi-table">
         <thead>
@@ -1554,7 +1657,7 @@ th { border-color: inherit !important; }
   </div>
 </section>
 
-<!-- RINGKASAN LAPORAN PLANNER & CETAK LAPORAN (F4 PRESISI) -->
+<!-- RINGKASAN LAPORAN PLANNER -->
 <section id="print_view" class="page">
   <div class="section-head" style="margin-bottom:8px;">
     <div></div>
@@ -1575,7 +1678,6 @@ th { border-color: inherit !important; }
       <div><b>Tanggal / Pekan:</b> <span id="printDate">-</span></div>
     </div>
 
-    <!-- I. AKTIVITAS PEKANAN -->
     <div class="print-section-title">I. Aktivitas Pekanan</div>
     <div class="print-grid">
       <div class="print-box">
@@ -1588,7 +1690,6 @@ th { border-color: inherit !important; }
       </div>
     </div>
 
-    <!-- II. TARGET PENGEMBANGAN DIRI -->
     <div class="print-section-title">II. Target Pengembangan Diri</div>
     <div class="print-grid">
       <div class="print-box">
@@ -1605,7 +1706,6 @@ th { border-color: inherit !important; }
       </div>
     </div>
 
-    <!-- III. LAPORAN ABSENSI PESERTA DIDIK -->
     <div class="print-section-title">III. Laporan Absensi Peserta Didik</div>
     <div class="print-grid">
       <div class="print-box">
@@ -1622,7 +1722,6 @@ th { border-color: inherit !important; }
       </div>
     </div>
 
-    <!-- IV. CAPAIAN 8 DPL PESERTA DIDIK -->
     <div class="print-section-title">IV. Capaian 8 DPL Peserta Didik</div>
     <div class="print-grid">
       <div class="print-box">
@@ -1635,7 +1734,6 @@ th { border-color: inherit !important; }
       </div>
     </div>
 
-    <!-- V. RATA-RATA NILAI FORMATIF -->
     <div class="print-section-title">V. Rata-Rata Nilai Formatif</div>
     <div class="print-grid">
       <div class="print-box" style="grid-column: 1 / -1;">
@@ -1648,7 +1746,6 @@ th { border-color: inherit !important; }
       </div>
     </div>
 
-    <!-- VI. RINGKASAN JURNAL REFLEKSI GURU -->
     <div class="print-section-title">VI. Ringkasan Jurnal Refleksi Guru</div>
     <div class="print-grid" style="grid-template-columns:1fr; gap:3px; margin-bottom:2px;">
       <div class="print-box">
@@ -1675,7 +1772,6 @@ th { border-color: inherit !important; }
       </div>
     </div>
 
-    <!-- TANDA TANGAN -->
     <div class="ttd-grid">
       <div>
         Mengetahui,<br>
@@ -1699,8 +1795,7 @@ th { border-color: inherit !important; }
 </div>
 
 <script>
-// URL APPS SCRIPT
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyxBA_gbZdkKKOs8S_bMfJTwA0NzAnhufeZl8Y2xF5oUVPVTorHW-NwGEbECJV2z6BM/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxwe-C1lbnsNVVMyVQ23oQleOAF2BexXD6XSsYotUBny1S21BNoc-4OIcb2bYzc66sp/exec";
 
 let syncTimeout = null;
 let cloudLoading = false;
@@ -1709,7 +1804,8 @@ let activeUserKey = localStorage.getItem("jtp_account_user_key") || "";
 let activeUsername = localStorage.getItem("jtp_account_username") || "";
 let activeTA = localStorage.getItem("jtp_active_ta") || localStorage.getItem("jtp_auto_ta") || getCalculatedTA();
 
-/* FUNGSI TOGGLE SIDEBAR HAMBURGER DESKTOP & MOBILE */
+let activeAbsensiDay = parseInt(localStorage.getItem("jtp_abs_active_day") || new Date().getDate());
+
 function toggleSidebarToggle() {
   const appLayout = document.getElementById("appLayout");
   const sidebar = document.getElementById("sidebar");
@@ -2384,7 +2480,19 @@ function changeAbsensiMonth(m){
  currentMonth=m;
  const selText=document.getElementById("absensiMonthSelect").options[document.getElementById("absensiMonthSelect").selectedIndex].text;
  document.getElementById("currentMonthLabel").textContent=selText;
+ document.getElementById("currentMonthProgressLabel").textContent=selText;
  renderAbsensi();
+}
+
+function changeAbsensiActiveDay(d) {
+ activeAbsensiDay = parseInt(d);
+ localStorage.setItem("jtp_abs_active_day", d);
+ document.getElementById("activeDayProgressText").textContent = d;
+ const quickDayLabel = document.getElementById("quickBoxDayLabel");
+ if(quickDayLabel) quickDayLabel.textContent = d;
+ updateAbsenceProgressTracker();
+ renderAbsensiNumberBadges();
+ buildStudentPickerGrid();
 }
 
 function getMonthDaysAndYear(monthKey) {
@@ -2418,12 +2526,114 @@ function getMonthDaysAndYear(monthKey) {
   };
 }
 
+function toggleQuickAbsenceBox() {
+  const box = document.getElementById("quickAbsenceBox");
+  if(box.style.display === "none" || !box.style.display) {
+    box.style.display = "block";
+    buildStudentPickerGrid();
+  } else {
+    box.style.display = "none";
+  }
+}
+
+function buildStudentPickerGrid() {
+  const grid = document.getElementById("studentPickerGrid");
+  if(!grid) return;
+  grid.innerHTML = "";
+  const students = getStudentsData();
+
+  students.forEach((st, i) => {
+    const item = document.createElement("label");
+    item.className = "student-picker-item";
+    item.innerHTML = `<input type="checkbox" class="student-select-cb" data-idx="${i}"> <b>${i+1}.</b> ${esc(st.name || 'Siswa')}`;
+    grid.appendChild(item);
+  });
+}
+
+function applyAutoHadirAll() {
+  const monthInfo = getMonthDaysAndYear(currentMonth);
+  const dateObj = new Date(monthInfo.year, monthInfo.mIndex, activeAbsensiDay);
+  if(dateObj.getDay() === 0 || dateObj.getDay() === 6) {
+    alert(`Tanggal ${activeAbsensiDay} adalah hari libur (Sabtu/Minggu).`);
+    return;
+  }
+
+  const students = getStudentsData();
+  const monthData = JSON.parse(get("absData_" + currentMonth, "{}"));
+
+  students.forEach((st, i) => {
+    if(!monthData[i]) monthData[i] = {};
+    monthData[i][activeAbsensiDay] = "H";
+  });
+
+  set("absData_" + currentMonth, JSON.stringify(monthData));
+  renderAbsensi();
+  renderRekap();
+}
+
+function applyExclusionToSelected(statusCode) {
+  const checkboxes = document.querySelectorAll(".student-select-cb:checked");
+  if(checkboxes.length === 0) {
+    alert("Silakan centang nomor/nama siswa terlebih dahulu.");
+    return;
+  }
+
+  const monthInfo = getMonthDaysAndYear(currentMonth);
+  const dateObj = new Date(monthInfo.year, monthInfo.mIndex, activeAbsensiDay);
+  if(dateObj.getDay() === 0 || dateObj.getDay() === 6) {
+    alert(`Tanggal ${activeAbsensiDay} adalah hari libur.`);
+    return;
+  }
+
+  const monthData = JSON.parse(get("absData_" + currentMonth, "{}"));
+
+  checkboxes.forEach(cb => {
+    const idx = cb.dataset.idx;
+    if(!monthData[idx]) monthData[idx] = {};
+    monthData[idx][activeAbsensiDay] = statusCode;
+    cb.checked = false;
+  });
+
+  set("absData_" + currentMonth, JSON.stringify(monthData));
+  renderAbsensi();
+  renderRekap();
+}
+
+function clearAbsenceActiveDay() {
+  if(!confirm(`Apakah Anda yakin ingin menghapus seluruh isian absensi pada Tanggal ${activeAbsensiDay}?`)) return;
+
+  const students = getStudentsData();
+  const monthData = JSON.parse(get("absData_" + currentMonth, "{}"));
+
+  students.forEach((st, i) => {
+    if(monthData[i] && monthData[i][activeAbsensiDay]) {
+      delete monthData[i][activeAbsensiDay];
+    }
+  });
+
+  set("absData_" + currentMonth, JSON.stringify(monthData));
+  renderAbsensi();
+  renderRekap();
+}
+
 function renderAbsensi(){
  const monthInfo = getMonthDaysAndYear(currentMonth);
  const totalDays = monthInfo.daysCount;
 
  const tanggalGroup = document.getElementById("tanggalHeaderGroup");
  if (tanggalGroup) tanggalGroup.colSpan = totalDays;
+
+ const activeDaySelect = document.getElementById("absensiActiveDaySelect");
+ if(activeDaySelect) {
+   activeDaySelect.innerHTML = "";
+   for(let d = 1; d <= totalDays; d++) {
+     const opt = document.createElement("option");
+     opt.value = d;
+     opt.textContent = `Tanggal ${d}`;
+     if(d === activeAbsensiDay) opt.selected = true;
+     activeDaySelect.appendChild(opt);
+   }
+ }
 
  const headerRow = document.getElementById("absensiDaysHeader");
  headerRow.innerHTML = "";
@@ -2452,14 +2662,21 @@ function renderAbsensi(){
       const dayOfWeek = dateObj.getDay();
       const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
 
+      let statusClass = "";
+      const code = val.toUpperCase().trim();
+      if (code === "H" || code === "." || code === "1") statusClass = "filled-h";
+      else if (code === "S") statusClass = "filled-s";
+      else if (code === "I") statusClass = "filled-i";
+      else if (code === "A") statusClass = "filled-a";
+
       daysHtml += `<td class="${isWeekend ? 'is-weekend' : ''}">
-        <input type="text" class="day-cell" data-s="${i}" data-d="${d}" value="${isWeekend ? '' : esc(val)}" maxlength="1" ${isWeekend ? 'disabled' : ''}>
+        <input type="text" class="day-cell ${statusClass}" data-s="${i}" data-d="${d}" value="${isWeekend ? '' : esc(val)}" maxlength="1" ${isWeekend ? 'disabled' : ''}>
       </td>`;
     }
 
     const tr = document.createElement("tr");
     tr.id = `absRow_${i}`;
-    tr.innerHTML = `<td class="col-sticky-1" style="text-align:center">${i+1}</td>
+    tr.innerHTML = `<td class="col-sticky-1" id="noCol_${i}"><span class="no-badge">${i+1}</span></td>
       <td class="col-sticky-2" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><b>${esc(name)}</b></td>
       ${daysHtml}
       <td style="text-align:center" id="stat_i_${i}">0</td>
@@ -2477,11 +2694,70 @@ function renderAbsensi(){
       const d = e.target.dataset.d;
       const val = e.target.value.toUpperCase();
       e.target.value = val;
+      
+      e.target.classList.remove("filled-h", "filled-s", "filled-i", "filled-a");
+      if (val === "H" || val === "." || val === "1") e.target.classList.add("filled-h");
+      else if (val === "S") e.target.classList.add("filled-s");
+      else if (val === "I") e.target.classList.add("filled-i");
+      else if (val === "A") e.target.classList.add("filled-a");
+
       saveAbsensiVal(s, d, val);
       calcStudentAbsensi(s);
       renderRekap();
+      updateAbsenceProgressTracker();
+      renderAbsensiNumberBadges();
     });
  });
+
+ updateAbsenceProgressTracker();
+ renderAbsensiNumberBadges();
+}
+
+function renderAbsensiNumberBadges() {
+ const students = getStudentsData();
+ const monthData = JSON.parse(get("absData_" + currentMonth, "{}"));
+
+ students.forEach((st, i) => {
+   const studentAbs = monthData[i] || {};
+   const val = studentAbs[activeAbsensiDay] || "";
+   const noCol = document.getElementById(`noCol_${i}`);
+   
+   if (noCol) {
+     if (val.trim() !== "") {
+       noCol.innerHTML = `<span class="no-badge done" title="Absensi ${st.name||'Siswa'} sudah diisi"><i class="fa-solid fa-check"></i></span>`;
+     } else {
+       noCol.innerHTML = `<span class="no-badge">${i+1}</span>`;
+     }
+   }
+ });
+}
+
+function updateAbsenceProgressTracker() {
+ const students = getStudentsData();
+ const monthData = JSON.parse(get("absData_" + currentMonth, "{}"));
+ let completed = 0;
+ let lastDoneIndex = -1;
+
+ students.forEach((st, i) => {
+   const studentAbs = monthData[i] || {};
+   const val = studentAbs[activeAbsensiDay] || "";
+   if (val.trim() !== "") {
+     completed++;
+     lastDoneIndex = i;
+   }
+ });
+
+ const countEl = document.getElementById("completedAbsenceCount");
+ if (countEl) countEl.textContent = `${completed} / ${students.length} Siswa`;
+
+ const nameEl = document.getElementById("lastAbsenceDoneName");
+ if (nameEl) {
+   if (lastDoneIndex >= 0 && students[lastDoneIndex]) {
+     nameEl.textContent = `No. ${lastDoneIndex + 1} (${students[lastDoneIndex].name || 'Tanpa Nama'})`;
+   } else {
+     nameEl.textContent = "Belum Ada";
+   }
+ }
 }
 
 function saveAbsensiVal(s,d,val){
@@ -3159,7 +3435,6 @@ async function resetPlanner(){
   }
 }
 
-// PROSES INISIALISASI APPS SAAT DI-REFRESH
 (function init(){
   document.documentElement.dataset.theme = "light";
   
