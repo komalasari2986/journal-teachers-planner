@@ -1755,13 +1755,16 @@ th { border-color: inherit !important; }
 <script>
 /* ======================================================
    KONTROL MODE MAINTENANCE / PEMELIHARAAN SISTEM
-   (Nilai IS_MAINTENANCE dan MAINTENANCE_BYPASS_KEY dibaca dari status.js)
    ====================================================== */
 
 function checkMaintenanceStatus() {
   const isBypassed = sessionStorage.getItem("jtp_maintenance_bypassed") === "true";
   const overlay = document.getElementById("maintenanceOverlay");
-  const isMaintenanceActive = typeof IS_MAINTENANCE !== "undefined" ? IS_MAINTENANCE : false;
+  
+  // Membaca dari window.IS_MAINTENANCE atau IS_MAINTENANCE global
+  const isMaintenanceActive = (typeof window.IS_MAINTENANCE !== "undefined") 
+                              ? window.IS_MAINTENANCE 
+                              : ((typeof IS_MAINTENANCE !== "undefined") ? IS_MAINTENANCE : false);
   
   if (isMaintenanceActive && !isBypassed) {
     if (overlay) overlay.style.display = "flex";
@@ -1772,7 +1775,9 @@ function checkMaintenanceStatus() {
 
 function promptBypassMaintenance() {
   const pass = prompt("Masukkan Kunci Akses Developer / Admin:");
-  const bypassKey = typeof MAINTENANCE_BYPASS_KEY !== "undefined" ? MAINTENANCE_BYPASS_KEY : "admin123";
+  const bypassKey = (typeof window.MAINTENANCE_BYPASS_KEY !== "undefined") 
+                    ? window.MAINTENANCE_BYPASS_KEY 
+                    : ((typeof MAINTENANCE_BYPASS_KEY !== "undefined") ? MAINTENANCE_BYPASS_KEY : "admin123");
 
   if (pass === bypassKey) {
     sessionStorage.setItem("jtp_maintenance_bypassed", "true");
@@ -1783,7 +1788,7 @@ function promptBypassMaintenance() {
   }
 }
 
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxAl1B_b_zbNZTilHqdG7kJUN9C4Piplj-fSvCNsy-sLh3IeGxSBnfONa-fsySZuCNX/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwItbsmKe2XuVmg9joY3w3LC5hUM5s2kLtTCkQOnTmZRj0-4nWHofKx4D9cDwr8iAvC/exec";
 
 let syncTimeout = null;
 let cloudLoading = false;
