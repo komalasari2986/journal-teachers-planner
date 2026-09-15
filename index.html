@@ -1317,7 +1317,7 @@ th { border-color: inherit !important; }
 </div>
 
 <script>
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqcL2DYp12Ixm0jLpORXFX1-LBNjjM8ovWG9YZAeVKG9pLLGrTYbDJhO0OIMoWg0Q9/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNRjEoe1uO3lR6Ju0tIyABSBzP1RzFJktAEeJ6va8pJvLNhec0pZgDLCljVJHZ38Xj/exec";
 
 let syncTimeout = null;
 let cloudLoading = false;
@@ -2406,7 +2406,7 @@ function saveActivities(){
  renderActivityChart(arr);
 }
 
-// LOGIKA GRAFIK AKTIVITAS PEKANAN (PROPORSI RIIL INPUT AKTIVITAS)
+// LOGIKA GRAFIK AKTIVITAS PEKANAN (PERSENTASE BERSIH TANPA ANGKA DALAM KURUNG)
 function renderActivityChart(data){
  const counts = [0,0,0,0,0];
  let totalFilled = 0;
@@ -2426,7 +2426,7 @@ function renderActivityChart(data){
    return `<div class="bar-row">
      <div class="bar-label">
        <span><b>${i+1}.</b> ${names[i]}</span>
-       <b>${p}% (${n})</b>
+       <b>${p}%</b>
      </div>
      <div class="bar-track">
        <div class="bar-fill" style="width:${p}%"></div>
