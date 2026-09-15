@@ -25,72 +25,6 @@ body{font-family:'Lexend',sans-serif;background:var(--bg);color:var(--text);min-
 button,input,textarea,select{font-family:inherit}
 .app{display:flex;min-height:100vh}
 
-/* ======================================================
-   STYLING OVERLAY MAINTENANCE MODE
-   ====================================================== */
-.maintenance-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 99999;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  color: #ffffff;
-  text-align: center;
-}
-.maintenance-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 24px;
-  padding: 40px 30px;
-  max-width: 480px;
-  width: 100%;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-}
-.maintenance-icon-box {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 20px;
-  border-radius: 50%;
-  background: rgba(217, 119, 6, 0.15);
-  border: 2px solid #d97706;
-  color: #f59e0b;
-  display: grid;
-  place-items: center;
-  font-size: 34px;
-  box-shadow: 0 0 25px rgba(245, 158, 11, 0.25);
-}
-.maintenance-title {
-  font-size: 22px;
-  font-weight: 800;
-  color: #ffffff;
-  margin-bottom: 10px;
-  letter-spacing: 0.5px;
-}
-.maintenance-text {
-  font-size: 12.5px;
-  color: #cbd5e1;
-  line-height: 1.6;
-  margin-bottom: 24px;
-}
-.maintenance-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(217, 119, 6, 0.2);
-  color: #fbbf24;
-  padding: 6px 14px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 700;
-  margin-bottom: 18px;
-  border: 1px solid rgba(245, 158, 11, 0.3);
-}
-
 .sidebar{
   width:270px;
   background:var(--card);
@@ -607,7 +541,7 @@ th { border-color: inherit !important; }
   }
 
   .sidebar, .topbar, .btn, .btn-back-home, footer, .section-head, 
-  .mobile-action-group, .clock, .btn-toggle-sidebar, #loginScreen, #maintenanceOverlay {
+  .mobile-action-group, .clock, .btn-toggle-sidebar, #loginScreen {
     display: none !important;
   }
 
@@ -703,31 +637,6 @@ th { border-color: inherit !important; }
 </style>
 </head>
 <body>
-
-<!-- OVERLAY MAINTENANCE MODE -->
-<div id="maintenanceOverlay" class="maintenance-overlay" style="display:none;">
-  <div class="maintenance-card">
-    <div class="maintenance-icon-box">
-      <i class="fa-solid fa-screwdriver-wrench fa-spin" style="--fa-animation-duration: 4s;"></i>
-    </div>
-    <div class="maintenance-badge">
-      <i class="fa-solid fa-triangle-exclamation"></i> Pemeliharaan Sistem Berjalan
-    </div>
-    <h1 class="maintenance-title">Sistem Sedang Pemeliharaan</h1>
-    <p class="maintenance-text">
-      Aplikasi <b>Journal Teachers Planner</b> saat ini sedang dalam proses pembaruan data dan perawatan rutin sistem untuk meningkatkan kinerja.<br><br>
-      Silakan kembali lagi dalam beberapa saat. Terima kasih atas kesabaran Anda.
-    </p>
-    <div style="display:flex; justify-content:center; gap:10px;">
-      <button class="btn secondary" onclick="location.reload()" style="background:rgba(255,255,255,0.1); color:#fff; border-color:rgba(255,255,255,0.2);">
-        <i class="fa-solid fa-rotate-right"></i> Muat Ulang Halaman
-      </button>
-      <button class="btn amber" onclick="promptBypassMaintenance()">
-        <i class="fa-solid fa-key"></i> Akses Developer
-      </button>
-    </div>
-  </div>
-</div>
 
 <!-- OVERLAY AUTH -->
 <div id="loginScreen" style="position:fixed; inset:0; z-index:9999; background:linear-gradient(135deg,#047857,#0f172a); display:flex; align-items:center; justify-content:center; padding:20px; overflow-y:auto;">
@@ -1753,42 +1662,7 @@ th { border-color: inherit !important; }
 </div>
 
 <script>
-/* ======================================================
-   KONTROL MODE MAINTENANCE / PEMELIHARAAN SISTEM
-   ====================================================== */
-
-function checkMaintenanceStatus() {
-  const isBypassed = sessionStorage.getItem("jtp_maintenance_bypassed") === "true";
-  const overlay = document.getElementById("maintenanceOverlay");
-  
-  // Membaca dari window.IS_MAINTENANCE atau IS_MAINTENANCE global
-  const isMaintenanceActive = (typeof window.IS_MAINTENANCE !== "undefined") 
-                              ? window.IS_MAINTENANCE 
-                              : ((typeof IS_MAINTENANCE !== "undefined") ? IS_MAINTENANCE : false);
-  
-  if (isMaintenanceActive && !isBypassed) {
-    if (overlay) overlay.style.display = "flex";
-  } else {
-    if (overlay) overlay.style.display = "none";
-  }
-}
-
-function promptBypassMaintenance() {
-  const pass = prompt("Masukkan Kunci Akses Developer / Admin:");
-  const bypassKey = (typeof window.MAINTENANCE_BYPASS_KEY !== "undefined") 
-                    ? window.MAINTENANCE_BYPASS_KEY 
-                    : ((typeof MAINTENANCE_BYPASS_KEY !== "undefined") ? MAINTENANCE_BYPASS_KEY : "admin123");
-
-  if (pass === bypassKey) {
-    sessionStorage.setItem("jtp_maintenance_bypassed", "true");
-    checkMaintenanceStatus();
-    alert("Kunci Akses Diterima! Anda masuk sebagai Developer.");
-  } else if (pass !== null) {
-    alert("Kunci Akses Salah!");
-  }
-}
-
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwItbsmKe2XuVmg9joY3w3LC5hUM5s2kLtTCkQOnTmZRj0-4nWHofKx4D9cDwr8iAvC/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxllOw_EHVXodsGRXU1-4PhIs8WBN0PSkvErdTHVFUuINxWmZ_Y_xjCnr0Ghhr8hFKD/exec";
 
 let syncTimeout = null;
 let cloudLoading = false;
@@ -3416,7 +3290,6 @@ async function resetPlanner(){
 (function init(){
   document.documentElement.dataset.theme = "light";
   
-  checkMaintenanceStatus();
   const isSessionValid = checkLoginSession();
   
   initSchoolLogo();
