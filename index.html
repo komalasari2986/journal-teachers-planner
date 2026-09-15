@@ -10,6 +10,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="icon" type="image/jpeg" href="assets/logo-sekolah.jpg">
 
+<!-- LOAD KONFIGURASI STATUS MAINTENANCE -->
+<script src="status.js"></script>
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -1752,17 +1755,15 @@ th { border-color: inherit !important; }
 <script>
 /* ======================================================
    KONTROL MODE MAINTENANCE / PEMELIHARAAN SISTEM
-   - Ubah `IS_MAINTENANCE` ke `true` jika sedang perbaikan
-   - Ubah `IS_MAINTENANCE` ke `false` jika berjalan normal
+   (Nilai IS_MAINTENANCE dan MAINTENANCE_BYPASS_KEY dibaca dari status.js)
    ====================================================== */
-let IS_MAINTENANCE = true; // <-- UBAH KE true / false DI SINI!
-const MAINTENANCE_BYPASS_KEY = "admin123"; // Password bypass developer
 
 function checkMaintenanceStatus() {
   const isBypassed = sessionStorage.getItem("jtp_maintenance_bypassed") === "true";
   const overlay = document.getElementById("maintenanceOverlay");
+  const isMaintenanceActive = typeof IS_MAINTENANCE !== "undefined" ? IS_MAINTENANCE : false;
   
-  if (IS_MAINTENANCE && !isBypassed) {
+  if (isMaintenanceActive && !isBypassed) {
     if (overlay) overlay.style.display = "flex";
   } else {
     if (overlay) overlay.style.display = "none";
@@ -1771,7 +1772,9 @@ function checkMaintenanceStatus() {
 
 function promptBypassMaintenance() {
   const pass = prompt("Masukkan Kunci Akses Developer / Admin:");
-  if (pass === MAINTENANCE_BYPASS_KEY) {
+  const bypassKey = typeof MAINTENANCE_BYPASS_KEY !== "undefined" ? MAINTENANCE_BYPASS_KEY : "admin123";
+
+  if (pass === bypassKey) {
     sessionStorage.setItem("jtp_maintenance_bypassed", "true");
     checkMaintenanceStatus();
     alert("Kunci Akses Diterima! Anda masuk sebagai Developer.");
@@ -1780,7 +1783,7 @@ function promptBypassMaintenance() {
   }
 }
 
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLRX-tNDilEqg4fW8DTLgcHv9Nzeh_5uOyvhikKdrGsuY9sDCCt-fW0K-OlvTJTen-/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxAl1B_b_zbNZTilHqdG7kJUN9C4Piplj-fSvCNsy-sLh3IeGxSBnfONa-fsySZuCNX/exec";
 
 let syncTimeout = null;
 let cloudLoading = false;
@@ -3408,7 +3411,7 @@ async function resetPlanner(){
 (function init(){
   document.documentElement.dataset.theme = "light";
   
-  checkMaintenanceStatus(); // Cek status maintenance saat aplikasi dimuat
+  checkMaintenanceStatus();
   const isSessionValid = checkLoginSession();
   
   initSchoolLogo();
