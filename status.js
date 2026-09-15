@@ -3,7 +3,7 @@
    - Set true  : Mengunci aplikasi (Maintenance Mode)
    - Set false : Aplikasi berjalan normal
    ====================================================== */
-window.IS_MAINTENANCE = false; 
+window.IS_MAINTENANCE = true; 
 window.MAINTENANCE_BYPASS_KEY = "admin123";
 
 (function initMaintenanceSystem() {
