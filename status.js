@@ -3,5 +3,5 @@
    - Ubah `IS_MAINTENANCE` ke `true` jika sedang perbaikan
    - Ubah `IS_MAINTENANCE` ke `false` jika berjalan normal
    ====================================================== */
-const IS_MAINTENANCE = false; // <-- UBAH KE true / false DI SINI!
-const MAINTENANCE_BYPASS_KEY = "admin123"; // Password bypass developer
+var IS_MAINTENANCE = false; // <-- Gunakan var agar terbaca di window global
+var MAINTENANCE_BYPASS_KEY = "admin123";
