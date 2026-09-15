@@ -21,7 +21,6 @@ window.MAINTENANCE_BYPASS_KEY = "admin123";
   function renderMaintenanceOverlay() {
     if (document.getElementById("maintenanceOverlay")) return;
 
-    // 1. Inject Style Overlay
     const style = document.createElement("style");
     style.id = "maintenance-styles";
     style.innerHTML = `
@@ -62,7 +61,6 @@ window.MAINTENANCE_BYPASS_KEY = "admin123";
     `;
     document.head.appendChild(style);
 
-    // 2. Inject HTML Overlay
     const overlay = document.createElement("div");
     overlay.id = "maintenanceOverlay";
     overlay.className = "maintenance-overlay";
@@ -89,44 +87,38 @@ window.MAINTENANCE_BYPASS_KEY = "admin123";
     document.body.appendChild(overlay);
   }
 
-  // 3. Fungsi Pengecekan Otomatis (Polling setiap 3 detik)
   function startRealtimeCheck() {
     maintenanceInterval = setInterval(() => {
-      // Re-fetch file status.js dari server untuk membaca perubahan IS_MAINTENANCE
-      fetch('status.js?v=' + new Date().getTime())
+      // Membaca ulang status.js dengan pencegahan cache penuh
+      fetch('status.js?t=' + Date.now(), { cache: 'no-store' })
         .then(response => response.text())
         .then(code => {
-          // Evaluasi status maintenance terbaru dari file
-          const match = code.match(/window\.IS_MAINTENANCE\s*=\s*(true|false)/);
-          if (match) {
-            const isStillMaintenance = match[1] === "true";
-            
-            // Jika status berubah jadi FALSE, hapus overlay secara otomatis
-            if (!isStillMaintenance) {
-              removeMaintenanceOverlay();
-            }
+          // Bersihkan spasi dan cek kata kunci secara presisi
+          const isMaintenanceActive = /IS_MAINTENANCE\s*=\s*true/i.test(code);
+          
+          if (!isMaintenanceActive) {
+            removeMaintenanceOverlay();
           }
         })
-        .catch(err => console.log("Checking status..."));
-    }, 3000); // 3000ms = Cek tiap 3 detik
+        .catch(() => {});
+    }, 2000); // Dipercepat jadi cek tiap 2 detik
   }
 
-  // JALANKAN LOGIKA UTAMA
   const isBypassed = sessionStorage.getItem("jtp_maintenance_bypassed") === "true";
 
-  if (!window.IS_MAINTENANCE) {
+  // LOGIKA EKSEKUSI
+  if (window.IS_MAINTENANCE === false) {
     removeMaintenanceOverlay();
-  } else if (window.IS_MAINTENANCE && !isBypassed) {
+  } else if (window.IS_MAINTENANCE === true && !isBypassed) {
     if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", renderMaintenanceOverlay);
     } else {
       renderMaintenanceOverlay();
     }
-    startRealtimeCheck(); // Aktifkan auto-check real-time
+    startRealtimeCheck();
   }
 })();
 
-// Fungsi bypass kata kunci developer
 function promptBypassMaintenance() {
   const pass = prompt("Masukkan Kunci Akses Developer / Admin:");
   const bypassKey = window.MAINTENANCE_BYPASS_KEY || "admin123";
