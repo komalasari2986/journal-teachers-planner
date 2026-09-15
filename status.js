@@ -3,19 +3,16 @@
    - Set true  : Mengunci aplikasi (Maintenance Mode)
    - Set false : Aplikasi berjalan normal
    ====================================================== */
-window.IS_MAINTENANCE = false; 
+window.IS_MAINTENANCE = true; 
 window.MAINTENANCE_BYPASS_KEY = "admin123";
 
 (function initMaintenanceSystem() {
-  let maintenanceInterval = null;
-
   function removeMaintenanceOverlay() {
     sessionStorage.removeItem("jtp_maintenance_bypassed");
     const overlay = document.getElementById("maintenanceOverlay");
     const style = document.getElementById("maintenance-styles");
     if (overlay) overlay.remove();
     if (style) style.remove();
-    if (maintenanceInterval) clearInterval(maintenanceInterval);
   }
 
   function renderMaintenanceOverlay() {
@@ -87,36 +84,34 @@ window.MAINTENANCE_BYPASS_KEY = "admin123";
     document.body.appendChild(overlay);
   }
 
-  function startRealtimeCheck() {
-    maintenanceInterval = setInterval(() => {
-      // Membaca ulang status.js dengan pencegahan cache penuh
-      fetch('status.js?t=' + Date.now(), { cache: 'no-store' })
-        .then(response => response.text())
-        .then(code => {
-          // Bersihkan spasi dan cek kata kunci secara presisi
-          const isMaintenanceActive = /IS_MAINTENANCE\s*=\s*true/i.test(code);
-          
-          if (!isMaintenanceActive) {
-            removeMaintenanceOverlay();
-          }
-        })
-        .catch(() => {});
-    }, 2000); // Dipercepat jadi cek tiap 2 detik
+  // Pemantau Real-Time (Selalu berjalan di background)
+  function checkStatusLoop() {
+    fetch('status.js?t=' + Date.now(), { cache: 'no-store' })
+      .then(res => res.text())
+      .then(code => {
+        const isMaintenanceActive = /IS_MAINTENANCE\s*=\s*true/i.test(code);
+        const isBypassed = sessionStorage.getItem("jtp_maintenance_bypassed") === "true";
+
+        if (!isMaintenanceActive) {
+          // Jika status di file sudah FALSE, hapus overlay seketika
+          removeMaintenanceOverlay();
+        } else if (isMaintenanceActive && !isBypassed) {
+          // Jika status di file TRUE dan user belum bypass, tampilkan overlay
+          renderMaintenanceOverlay();
+        }
+      })
+      .catch(() => {});
   }
 
-  const isBypassed = sessionStorage.getItem("jtp_maintenance_bypassed") === "true";
-
-  // LOGIKA EKSEKUSI
-  if (window.IS_MAINTENANCE === false) {
-    removeMaintenanceOverlay();
-  } else if (window.IS_MAINTENANCE === true && !isBypassed) {
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", renderMaintenanceOverlay);
-    } else {
-      renderMaintenanceOverlay();
-    }
-    startRealtimeCheck();
+  // Jalankan pengecekan pertama kali
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", checkStatusLoop);
+  } else {
+    checkStatusLoop();
   }
+
+  // Set interval cek setiap 1.5 detik agar perubahan dari true ke false langsung responsif
+  setInterval(checkStatusLoop, 1500);
 })();
 
 function promptBypassMaintenance() {
