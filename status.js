@@ -16,7 +16,11 @@ window.MAINTENANCE_BYPASS_KEY = "admin123";
   }
 
   function renderMaintenanceOverlay() {
+    // Cegah render ganda jika elemen sudah ada
     if (document.getElementById("maintenanceOverlay")) return;
+    
+    // Pastikan document.body sudah ada sebelum menempelkan elemen
+    if (!document.body) return;
 
     const style = document.createElement("style");
     style.id = "maintenance-styles";
@@ -84,34 +88,29 @@ window.MAINTENANCE_BYPASS_KEY = "admin123";
     document.body.appendChild(overlay);
   }
 
-  // Pemantau Real-Time (Selalu berjalan di background)
+  // Fungsi Pengecekan Real-time (Membaca file fisik status.js secara langsung)
   function checkStatusLoop() {
     fetch('status.js?t=' + Date.now(), { cache: 'no-store' })
       .then(res => res.text())
       .then(code => {
+        // Deteksi teks window.IS_MAINTENANCE = true / false langsung dari isi file
         const isMaintenanceActive = /IS_MAINTENANCE\s*=\s*true/i.test(code);
         const isBypassed = sessionStorage.getItem("jtp_maintenance_bypassed") === "true";
 
-        if (!isMaintenanceActive) {
-          // Jika status di file sudah FALSE, hapus overlay seketika
-          removeMaintenanceOverlay();
-        } else if (isMaintenanceActive && !isBypassed) {
-          // Jika status di file TRUE dan user belum bypass, tampilkan overlay
+        if (isMaintenanceActive && !isBypassed) {
           renderMaintenanceOverlay();
+        } else {
+          removeMaintenanceOverlay();
         }
       })
       .catch(() => {});
   }
 
-  // Jalankan pengecekan pertama kali
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", checkStatusLoop);
-  } else {
-    checkStatusLoop();
-  }
-
-  // Set interval cek setiap 1.5 detik agar perubahan dari true ke false langsung responsif
-  setInterval(checkStatusLoop, 1500);
+  // Jalankan interval setiap 1 detik tanpa henti
+  setInterval(checkStatusLoop, 1000);
+  
+  // Eksekusi langsung di awal
+  checkStatusLoop();
 })();
 
 function promptBypassMaintenance() {
