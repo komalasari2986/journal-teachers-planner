@@ -1317,7 +1317,7 @@ th { border-color: inherit !important; }
 </div>
 
 <script>
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby9iKuPMDeF-ix8Odz28e_duzB1yVOHXhy2ywMonAM3wMOGf49ZBwQTDeLgXcpog1Q0/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqcL2DYp12Ixm0jLpORXFX1-LBNjjM8ovWG9YZAeVKG9pLLGrTYbDJhO0OIMoWg0Q9/exec";
 
 let syncTimeout = null;
 let cloudLoading = false;
@@ -2406,7 +2406,7 @@ function saveActivities(){
  renderActivityChart(arr);
 }
 
-// PERBAIKAN LOGIKA GRAFIK AKTIVITAS PEKANAN (PROPORSI RIIL INPUT AKTIVITAS)
+// LOGIKA GRAFIK AKTIVITAS PEKANAN (PROPORSI RIIL INPUT AKTIVITAS)
 function renderActivityChart(data){
  const counts = [0,0,0,0,0];
  let totalFilled = 0;
@@ -2422,7 +2422,6 @@ function renderActivityChart(data){
  const names = ["Membersamai peserta didik","Mengerjakan administrasi","Rapat koordinasi","Remedial / pengayaan peserta didik","Pengembangan diri"];
  
  document.getElementById("activityChart").innerHTML = counts.map((n, i) => {
-   // Jika ada input, persentase dihitung dari proporsi input riil yang terisi
    const p = totalFilled > 0 ? Math.round((n / totalFilled) * 100) : 0;
    return `<div class="bar-row">
      <div class="bar-label">
@@ -2540,7 +2539,7 @@ function saveDPL(){
  renderDPLChart(arr);
 }
 
-// LOGIKA DIAGRAM 8 DPL (5 HARI KERJA = 100%)
+// LOGIKA DIAGRAM 8 DPL (PERSENTASE BERSIH)
 function renderDPLChart(data){
  const counts = [0,0,0,0,0,0,0,0];
  
@@ -2559,7 +2558,7 @@ function renderDPLChart(data){
    return `<div class="bar-row">
      <div class="bar-label">
        <span><b>${i+1}.</b> ${labels[i]}</span>
-       <b>${p}% (${n}/5 Hari)</b>
+       <b>${p}%</b>
      </div>
      <div class="bar-track">
        <div class="bar-fill" style="width:${p}%"></div>
