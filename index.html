@@ -223,6 +223,9 @@ input.day-cell:disabled { background-color: #fecdd3 !important; border-color: #f
 .toggle-password-btn { position: absolute; right: 12px; background: transparent; border: none; color: var(--sub); cursor: pointer; font-size: 14px; padding: 4px; display: flex; align-items: center; justify-content: center; }
 .toggle-password-btn:hover { color: var(--green); }
 
+.highlight-missing { animation: pulseHighlight 1.5s ease-in-out infinite alternate; border: 2px solid var(--amber) !important; background: #fffbe8 !important; }
+@keyframes pulseHighlight { from { background-color: #fffbe8; } to { background-color: #fef3c7; } }
+
 @media(max-width:1050px){
   .stats{grid-template-columns:repeat(2,1fr)}
   .sidebar{width:235px}
@@ -541,9 +544,29 @@ th { border-color: inherit !important; }
     </div>
     <div class="actions">
       <button class="btn amber" onclick="togglePasteBox()"><i class="fa-solid fa-paste"></i> Paste Data dari Excel</button>
-      <button class="btn" onclick="addStudentRow()"><i class="fa-solid fa-plus"></i> Tambah Siswa</button>
+      <button class="btn" onclick="addStudentRow()"><i class="fa-solid fa-plus"></i> Tambah Siswa Baru</button>
       <button class="btn danger" onclick="removeLastStudentRow()"><i class="fa-solid fa-minus"></i> Kurangi Siswa</button>
       <button class="btn secondary" onclick="saveStudents()"><i class="fa-solid fa-floppy-disk"></i> Simpan</button>
+    </div>
+  </div>
+
+  <!-- PANEL LOMPAT KE DATA SISWA YANG KOSONG (QUICK JUMP) -->
+  <div class="card" style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 14px 18px; margin-bottom: 15px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+      <div>
+        <div style="font-weight: 800; color: var(--green); font-size: 13px;">
+          <i class="fa-solid fa-pen-to-square"></i> Lengkapi Data Siswa yang Kosong (Tanpa Scroll)
+        </div>
+        <div style="font-size: 11px; color: #166534; margin-top: 2px;">
+          Pilih siswa yang belum lengkap datanya (misal NISN/Ortu di No 1, No 2 dst yang belum diisi):
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px; width:100%; max-width:400px;">
+        <select id="missingDataSelect" style="background:#fff; flex:1;" onchange="jumpToMissingStudentField(this.value)">
+          <option value="">-- Pilih Siswa yang Datanya Kosong --</option>
+        </select>
+        <button class="btn" onclick="populateMissingDropdown()"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
+      </div>
     </div>
   </div>
 
@@ -1317,7 +1340,7 @@ th { border-color: inherit !important; }
 </div>
 
 <script>
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyNRjEoe1uO3lR6Ju0tIyABSBzP1RzFJktAEeJ6va8pJvLNhec0pZgDLCljVJHZ38Xj/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyDSmkdLtDyZWKpSafXqyMgtfIz9f-S9A2gihS0PoMB9DzJKuBgGaMs_gqm0350VCPk/exec";
 
 let syncTimeout = null;
 let cloudLoading = false;
@@ -1870,6 +1893,7 @@ function renderStudents(){
  
  saved.forEach((s, i) => {
    const tr = document.createElement("tr");
+   tr.id = `student_row_${i}`;
    const fields = ["name","nisn","gender","birth","parent","job","phone"];
    
    tr.innerHTML = `<td>${i+1}</td>` + 
@@ -1879,6 +1903,7 @@ function renderStudents(){
  
  document.querySelectorAll(".student-input").forEach(x=>x.addEventListener("input", saveStudents));
  updateStudentCount();
+ populateMissingDropdown();
  renderAbsensi();
  renderRekap();
  renderAnekdot();
@@ -1894,10 +1919,70 @@ function saveStudents(){
  });
  set("students", JSON.stringify(arr));
  updateStudentCount();
+ populateMissingDropdown();
  renderAbsensi();
  renderRekap();
  renderAnekdot();
  renderNilai();
+}
+
+/* POPULASI DROPDOWN DENGAN BARIS SISWA YANG MEMILIKI SEL KOSONG */
+function populateMissingDropdown() {
+  const select = document.getElementById("missingDataSelect");
+  if (!select) return;
+  
+  select.innerHTML = `<option value="">-- Pilih Siswa yang Datanya Kosong --</option>`;
+  const students = getStudentsData();
+  const fieldLabels = {
+    name: "Nama Siswa", nisn: "NISN", gender: "L/P", birth: "Tgl Lahir", parent: "Ortu", job: "Pekerjaan", phone: "No Telp"
+  };
+
+  students.forEach((s, i) => {
+    const missing = [];
+    Object.keys(fieldLabels).forEach(f => {
+      if (!s[f] || String(s[f]).trim() === "") {
+        missing.push(fieldLabels[f]);
+      }
+    });
+
+    if (missing.length > 0 && missing.length < 7) {
+      const opt = document.createElement("option");
+      const displayName = s.name ? s.name : `Siswa No. ${i+1}`;
+      opt.value = `${i}|${missing.join(",")}`;
+      opt.textContent = `No. ${i+1} ${displayName} (Belum Ada: ${missing.join(", ")})`;
+      select.appendChild(opt);
+    }
+  });
+}
+
+/* LOMPAT & FOCUS KE SEL KOSONG SESUAI SISWA YANG DIPILIH */
+function jumpToMissingStudentField(val) {
+  if (!val) return;
+  const [indexStr] = val.split("|");
+  const idx = parseInt(indexStr);
+
+  const row = document.getElementById(`student_row_${idx}`);
+  if (!row) return;
+
+  const inputs = row.querySelectorAll("input.student-input");
+  let targetInput = null;
+
+  for (let input of inputs) {
+    if (!input.value || input.value.trim() === "") {
+      targetInput = input;
+      break;
+    }
+  }
+
+  if (!targetInput) targetInput = inputs[0];
+
+  targetInput.scrollIntoView({ behavior: "smooth", block: "center" });
+  targetInput.focus();
+  targetInput.classList.add("highlight-missing");
+
+  setTimeout(() => {
+    targetInput.classList.remove("highlight-missing");
+  }, 2500);
 }
 
 function updateStudentCount(){
@@ -2425,11 +2510,11 @@ function renderActivityChart(data){
    const p = totalFilled > 0 ? Math.round((n / totalFilled) * 100) : 0;
    return `<div class="bar-row">
      <div class="bar-label">
-       <span><b>${i+1}.</b> ${names[i]}</span>
-       <b>${p}%</b>
+        <span><b>${i+1}.</b> ${names[i]}</span>
+        <b>${p}%</b>
      </div>
      <div class="bar-track">
-       <div class="bar-fill" style="width:${p}%"></div>
+        <div class="bar-fill" style="width:${p}%"></div>
      </div>
    </div>`;
  }).join("");
@@ -2557,11 +2642,11 @@ function renderDPLChart(data){
    const p = Math.min(100, Math.round((n / MAX_DAYS) * 100));
    return `<div class="bar-row">
      <div class="bar-label">
-       <span><b>${i+1}.</b> ${labels[i]}</span>
-       <b>${p}%</b>
+        <span><b>${i+1}.</b> ${labels[i]}</span>
+        <b>${p}%</b>
      </div>
      <div class="bar-track">
-       <div class="bar-fill" style="width:${p}%"></div>
+        <div class="bar-fill" style="width:${p}%"></div>
      </div>
    </div>`;
  }).join("");
