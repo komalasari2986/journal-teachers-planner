@@ -1340,7 +1340,7 @@ th { border-color: inherit !important; }
 </div>
 
 <script>
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyDSmkdLtDyZWKpSafXqyMgtfIz9f-S9A2gihS0PoMB9DzJKuBgGaMs_gqm0350VCPk/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw3aNec5a8dUuNvOu8jIG0rD7_7PBEO637xWQ7Nr9XJRj098DrdNRUMwzrnm6OV-Qr-/exec";
 
 let syncTimeout = null;
 let cloudLoading = false;
@@ -2033,10 +2033,15 @@ function processPastedNames() {
     return;
   }
 
-  const lines = text.split(/\r?\n/).filter(line => line.trim().length > 0);
+  // PENTING: Pertahankan urutan baris termasuk spasi/baris kosong agar posisi data tidak tergeser
+  const lines = text.split(/\r?\n/);
+
+  while (lines.length > 0 && lines[lines.length - 1].trim() === "") {
+    lines.pop();
+  }
 
   if (lines.length === 0) {
-    alert("Tidak ada data valid yang ditemukan.");
+    alert("Tidak ada data yang ditemukan.");
     return;
   }
 
@@ -2066,9 +2071,8 @@ function processPastedNames() {
           }
         });
       } else {
-        if (cols.length > 0) {
-          saved[index][targetField] = cols[0];
-        }
+        const val = cols[0] !== undefined ? cols[0] : "";
+        saved[index][targetField] = val;
       }
     }
   });
@@ -2079,7 +2083,7 @@ function processPastedNames() {
   document.getElementById("pasteInputText").value = "";
   togglePasteBox();
 
-  alert(`Berhasil mengimpor data untuk ${Math.min(lines.length, 24)} siswa!`);
+  alert(`Berhasil memproses data untuk ${Math.min(lines.length, 24)} baris siswa (termasuk baris kosong dipertahankan)!`);
 }
 
 function esc(v){return String(v).replaceAll("&","&amp;").replaceAll('"',"&quot;").replaceAll("<","&lt;").replaceAll(">","&gt;")}
