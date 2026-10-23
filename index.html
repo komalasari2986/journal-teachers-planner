@@ -1340,7 +1340,7 @@ th { border-color: inherit !important; }
 </div>
 
 <script>
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbylIt5WXwB2Q_cHZ9NS0eiueUP1z725thJJJaBhtsD_sCu48vCIGRefYNVW9EUYKd0R/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyd8T5AteaXyLcqGzd3zDMBc6sM5Tjvam26ewGFqe9toNCO4XhxJ_4mauE3yna4oGlU/exec";
 
 let syncTimeout = null;
 let cloudLoading = false;
@@ -1413,22 +1413,25 @@ async function cloudPost(body){
   return data;
 }
 
+const JTP_ACCOUNT_META_KEYS = new Set([
+  "jtp_is_logged_in", "jtp_account_user_key", "jtp_account_username", "jtp_active_ta"
+]);
+
+function isPlannerPayloadKey(k){
+  return !!k && k.startsWith("jtp_") && !JTP_ACCOUNT_META_KEYS.has(k) && !k.startsWith("jtp_cache_user_");
+}
+
 function getLocalPayload(){
   const payload = {};
   for(let i=0;i<localStorage.length;i++){
     const k = localStorage.key(i);
-    if(k && k.startsWith("jtp_") &&
-       !["jtp_is_logged_in","jtp_account_user_key","jtp_account_username","jtp_active_ta"].includes(k)){
-      payload[k.replace("jtp_","")] = localStorage.getItem(k);
-    }
+    if(isPlannerPayloadKey(k)) payload[k.slice(4)] = localStorage.getItem(k);
   }
   return payload;
 }
 
 function clearPlannerLocalData(){
-  Object.keys(localStorage)
-    .filter(k => k.startsWith("jtp_"))
-    .forEach(k => localStorage.removeItem(k));
+  Object.keys(localStorage).filter(isPlannerPayloadKey).forEach(k => localStorage.removeItem(k));
 }
 
 function putPayloadToLocal(payload){
@@ -1437,18 +1440,56 @@ function putPayloadToLocal(payload){
   });
 }
 
+// Cache lokal dipisah per user agar pergantian akun di satu browser tidak mencampur data.
+function cacheKeyForUser(userKey){ return "jtp_cache_user_" + String(userKey || ""); }
+
+function cacheCurrentUserPayload(userKey){
+  if(!userKey) return;
+  try { localStorage.setItem(cacheKeyForUser(userKey), JSON.stringify(getLocalPayload())); }
+  catch(e) { console.warn("Cache lokal pengguna gagal disimpan:", e); }
+}
+
+function restoreUserPayloadCache(userKey){
+  if(!userKey) return false;
+  try {
+    const raw = localStorage.getItem(cacheKeyForUser(userKey));
+    if(!raw) return false;
+    const payload = JSON.parse(raw);
+    if(!payload || typeof payload !== "object" || Array.isArray(payload)) return false;
+    putPayloadToLocal(payload);
+    return true;
+  } catch(e) {
+    console.warn("Cache lokal pengguna tidak dapat dibaca:", e);
+    return false;
+  }
+}
+
+function switchLocalUser(userKey){
+  const previousUserKey = localStorage.getItem("jtp_account_user_key") || activeUserKey || "";
+  if(previousUserKey) cacheCurrentUserPayload(previousUserKey);
+  clearPlannerLocalData();
+  restoreUserPayloadCache(userKey);
+}
+
 function autoSyncToCloud(){
   if(cloudLoading || !activeUserKey) return;
+  const userKeyAtSchedule = activeUserKey;
   const currentTA = activeTA || getCalculatedTA();
   clearTimeout(syncTimeout);
   syncTimeout = setTimeout(async()=>{
+    // Jangan kirim payload kalau akun berubah saat timer masih menunggu.
+    if(cloudLoading || !activeUserKey || activeUserKey !== userKeyAtSchedule) return;
+    const payload = getLocalPayload();
+    if(!payload || Object.keys(payload).length === 0) return;
+    cacheCurrentUserPayload(userKeyAtSchedule);
     try{
-      await cloudPost({
+      const result = await cloudPost({
         action:"save_v2",
-        userKey:activeUserKey,
+        userKey:userKeyAtSchedule,
         ta:currentTA,
-        payload:getLocalPayload()
+        payload
       });
+      if(!result.ok) console.warn("Sinkronisasi ditolak:", result.error || "Tidak diketahui");
     }catch(err){
       console.error("Gagal sinkronisasi:",err);
     }
@@ -1465,11 +1506,22 @@ async function loadTADataBackground(ta){
       userKey:activeUserKey,
       ta:taToUse
     });
-    if(res.ok && res.payload) {
+    if(res.ok) {
       activeTA = taToUse;
       localStorage.setItem("jtp_active_ta",taToUse);
       localStorage.setItem("jtp_auto_ta",taToUse);
-      putPayloadToLocal(res.payload);
+
+      if(res.exists === true && res.payload && typeof res.payload === "object") {
+        // Data server adalah sumber utama. Bersihkan data akun/TA sebelumnya sebelum memuatnya.
+        clearPlannerLocalData();
+        putPayloadToLocal(res.payload);
+        cacheCurrentUserPayload(activeUserKey);
+      } else if(res.exists === false) {
+        // Sheet belum ada: jangan mengirim data kosong ke server saat login.
+        // Pertahankan hanya cache lokal milik akun yang sedang login.
+        console.info("Belum ada data cloud untuk akun/TA ini; tidak ada data yang ditimpa.");
+      }
+
       setAcademicYearUI(taToUse);
       initInputs();
       renderStudents();
@@ -1479,6 +1531,8 @@ async function loadTADataBackground(ta){
       renderAnekdot();
       renderNilai();
       renderRefleksi();
+    } else {
+      throw new Error(res.error || "Gagal memuat data dari server.");
     }
   }catch(e){
     console.log("Mode offline: menggunakan data lokal HP/Laptop");
@@ -1550,6 +1604,8 @@ async function handleLogin(e){
     const res=await cloudPost({action:"login_v2", username, password});
     if(!res.ok) throw new Error(res.error || "Username atau password salah.");
 
+    // Pisahkan cache akun lama sebelum mengaktifkan akun yang baru.
+    switchLocalUser(res.userKey);
     activeUserKey=res.userKey;
     activeUsername=res.username;
     activeTA = res.ta || getCalculatedTA();
@@ -1562,7 +1618,7 @@ async function handleLogin(e){
     document.getElementById("loginScreen").style.display="none";
     setAcademicYearUI(activeTA);
 
-    loadTADataBackground(activeTA);
+    await loadTADataBackground(activeTA);
 
   }catch(err){
     alert(err.message || "Login gagal.");
@@ -1604,6 +1660,7 @@ async function handleRegister(e){
     });
     if(!res.ok) throw new Error(res.error || "Registrasi gagal.");
 
+    switchLocalUser(res.userKey);
     activeUserKey=res.userKey;
     activeUsername=res.username;
     activeTA=res.ta || ta;
