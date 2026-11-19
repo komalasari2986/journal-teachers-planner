@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Journal Teachers Planner - Sedang Pemeliharaan</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      color: #ffffff;
+      font-family: 'Lexend', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: #0f172a;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='rgba(148,163,184,0.09)' stroke-width='1'%3E%3Cpath d='M32 0 L64 32 L32 64 L0 32 Z'/%3E%3Crect x='13.25' y='13.25' width='37.5' height='37.5'/%3E%3Cpath d='M0 0 L13.25 13.25 M64 0 L50.75 13.25 M64 64 L50.75 50.75 M0 64 L13.25 50.75'/%3E%3C/g%3E%3C/svg%3E"),
+        radial-gradient(circle at 50% 45%, rgba(16, 185, 129, 0.14) 0%, transparent 60%),
+        linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      background-size: 64px 64px, 100% 100%, 100% 100%;
+    }
+    .card {
+      width: min(960px, 100%);
+      padding: clamp(28px, 4vw, 46px);
+      display: grid;
+      grid-template-columns: 270px 1fr;
+      gap: clamp(28px, 4vw, 52px);
+      align-items: center;
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 28px;
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.48);
+    }
+    .left-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding-right: 28px;
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .logo-wrap {
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      background: #ffffff;
+      padding: 4px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 14px;
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+    .logo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 50%;
+      display: block;
+    }
+    .logo-fallback {
+      display: none;
+      color: #047857;
+      font-size: 30px;
+    }
+    .school {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #6ee7b7;
+      margin-bottom: 3px;
+    }
+    .app-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 20px;
+    }
+    .tool-icon {
+      display: grid;
+      place-items: center;
+      width: 76px;
+      height: 76px;
+      border-radius: 22px;
+      color: #ffffff;
+      background: linear-gradient(135deg, #059669, #047857);
+      box-shadow: 0 14px 30px rgba(5, 150, 105, 0.3);
+      font-size: 30px;
+      margin-bottom: 18px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border: 1px solid rgba(245, 158, 11, 0.38);
+      border-radius: 999px;
+      background: rgba(217, 119, 6, 0.18);
+      color: #fbbf24;
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #fbbf24;
+      box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.18);
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    h1 {
+      color: #ffffff;
+      font-size: clamp(23px, 2.4vw, 31px);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .message {
+      color: #cbd5e1;
+      font-size: 13.5px;
+      line-height: 1.75;
+      white-space: pre-wrap;
+    }
+    .eta {
+      display: none;
+      align-items: center;
+      gap: 9px;
+      margin-top: 16px;
+      padding: 11px 14px;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      border-radius: 12px;
+      color: #a7f3d0;
+      background: rgba(16, 185, 129, 0.14);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .eta.show { display: flex; }
+    .divider {
+      width: 76px;
+      height: 3px;
+      margin: 20px 0 14px;
+      border-radius: 99px;
+      background: linear-gradient(90deg, #10b981, #34d399);
+    }
+    .help {
+      color: #94a3b8;
+      font-size: 12px;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 44px;
+      padding: 0 22px;
+      border: 0;
+      border-radius: 12px;
+      color: #ffffff;
+      background: linear-gradient(135deg, #047857, #059669);
+      box-shadow: 0 8px 22px rgba(5, 150, 105, 0.32);
+      font-size: 12.5px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: filter 0.2s ease, transform 0.15s ease;
+    }
+    .button:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    .status {
+      color: #64748b;
+      font-size: 11px;
+    }
+    @media (max-width: 760px) {
+      body { padding: 16px; }
+      .card {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 28px 22px;
+        border-radius: 24px;
+      }
+      .left-col {
+        padding-right: 0;
+        padding-bottom: 22px;
+        border-right: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .right-col { align-items: center; text-align: center; }
+      .actions { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <main class="card" role="status" aria-live="polite">
+    <aside class="left-col">
+      <div class="logo-wrap">
+        <img id="schoolLogoImg" src="assets/logo-sekolah.jpg" alt="Logo SD Islam Ramah Anak">
+        <span id="schoolLogoFallback" class="logo-fallback"><i class="fa-solid fa-school"></i></span>
+      </div>
+      <div class="school">SD Islam Ramah Anak</div>
+      <div class="app-name">Journal Teachers Planner</div>
+      <div class="tool-icon" aria-hidden="true"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+      <span class="pill"><span class="dot"></span> Pemeliharaan Sistem</span>
+    </aside>
+
+    <section class="right-col">
+      <h1>Aplikasi Sedang Dalam Pemeliharaan</h1>
+      <p id="msg" class="message">Journal Teachers Planner saat ini sedang menjalani pemeliharaan rutin untuk peningkatan layanan. Silakan kembali beberapa saat lagi.</p>
+      <div id="eta" class="eta"><i class="fa-regular fa-clock"></i><span>Perkiraan selesai: <strong id="etaVal"></strong></span></div>
+      <div class="divider"></div>
+      <p class="help">Kami sedang melakukan pembaruan agar pengisian jurnal guru berjalan lebih lancar. Data akun dan seluruh jurnal Bapak/Ibu tetap tersimpan aman di server.</p>
+      <div class="actions">
+        <a class="button" href="./"><i class="fa-solid fa-rotate"></i> Periksa Kembali</a>
+        <span id="status" class="status">Halaman akan otomatis terbuka setelah pemeliharaan selesai.</span>
+      </div>
+    </section>
+  </main>
+  <script>
+    (function () {
+      const img = document.getElementById("schoolLogoImg");
+      const fallback = document.getElementById("schoolLogoFallback");
+      const candidates = ["assets/logo-sekolah.jpg", "assets/logo-sekolah.png", "assets/logo-sekolah.jpeg", "assets/logo-sekolah.webp"];
+      let idx = 0;
+      img.onerror = function () {
+        idx++;
+        if (idx < candidates.length) {
+          img.src = candidates[idx];
+        } else {
+          img.style.display = "none";
+          if (fallback) fallback.style.display = "block";
+        }
+      };
+
+      const GAS_URL = "https://script.google.com/macros/s/AKfycbwwJWulR2zjsKM27tznkAlewWM_awYrqnHdVSSeRZ_r5s1CaclVrGrLsfNwtcA4mIwO/exec";
+      fetch(GAS_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action: "get_maintenance_v2" }),
+        redirect: "follow"
+      })
+        .then(r => r.json())
+        .then(res => {
+          if (res && res.ok && res.config && res.config.enabled) {
+            document.getElementById("msg").textContent = res.config.message;
+            if (res.config.eta) {
+              document.getElementById("etaVal").textContent = res.config.eta;
+              document.getElementById("eta").classList.add("show");
+            }
+            document.getElementById("status").textContent = "Informasi pemeliharaan dimuat langsung dari server.";
+          }
+        })
+        .catch(() => {});
+    })();
+  </script>
+</body>
+</html>
